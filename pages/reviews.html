@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Reviews — Shortcut's Skin Care Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        body.reviews-page {
+            min-height: 100vh;
+            background: var(--mist);
+            padding: 0;
+        }
+
+        /* ── Top nav bar ── */
+        .rv-topbar {
+            background: linear-gradient(135deg, #0D0D0D 0%, #1A1200 50%, #2A1F00 100%);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 20px rgba(0,0,0,.3);
+        }
+
+        .rv-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rv-brand-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255,255,255,.10);
+            border: 1px solid rgba(255,255,255,.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .rv-brand-text h1 {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            color: white;
+            font-weight: 600;
+            line-height: 1.1;
+        }
+
+        .rv-brand-text p {
+            font-size: .7rem;
+            color: rgba(255,255,255,.45);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .rv-topbar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .rv-btn-leave {
+            background: linear-gradient(135deg, var(--fern), var(--sage));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 9px 18px;
+            font-family: inherit;
+            font-size: .82rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: opacity .2s;
+        }
+        .rv-btn-leave:hover { opacity: .88; }
+
+        /* ── Hero summary bar ── */
+        .rv-hero {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 28px 32px;
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .rv-score {
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .rv-score-num {
+            font-family: var(--font-display);
+            font-size: 3.2rem;
+            font-weight: 600;
+            color: var(--ink);
+            line-height: 1;
+        }
+
+        .rv-score-stars {
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            margin: 4px 0;
+        }
+
+        .rv-score-count {
+            font-size: .78rem;
+            color: var(--stone);
+        }
+
+        .rv-divider {
+            width: 1px;
+            height: 70px;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .rv-breakdown {
+            flex: 1;
+            min-width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .rv-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .78rem;
+            color: var(--stone);
+        }
+
+        .rv-bar-label { width: 22px; text-align: right; flex-shrink: 0; }
+        .rv-bar-track {
+            flex: 1;
+            height: 7px;
+            background: var(--mist);
+            border-radius: 100px;
+            overflow: hidden;
+        }
+        .rv-bar-fill {
+            height: 100%;
+            border-radius: 100px;
+            background: linear-gradient(90deg, var(--fern), var(--sage));
+            transition: width .6s ease;
+        }
+        .rv-bar-count { width: 26px; flex-shrink: 0; }
+
+        /* ── Filter row ── */
+        .rv-filters {
+            padding: 18px 32px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            background: var(--pearl);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .rv-filter-label {
+            font-size: .78rem;
+            font-weight: 500;
+            color: var(--stone);
+            letter-spacing: .04em;
+        }
+
+        .rv-select {
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 8px 14px;
+            font-family: inherit;
+            font-size: .82rem;
+            background: white;
+            color: var(--ink);
+            outline: none;
+            cursor: pointer;
+            transition: border-color .2s;
+        }
+        .rv-select:focus { border-color: var(--fern); }
+
+        .rv-count-tag {
+            margin-left: auto;
+            font-size: .78rem;
+            color: var(--stone);
+        }
+
+        /* ── Review cards ── */
+        .rv-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px 24px 60px;
+        }
+
+        .rv-empty {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--stone);
+        }
+        .rv-empty-icon { font-size: 3rem; margin-bottom: 14px; }
+        .rv-empty h3 { font-size: 1rem; font-weight: 500; margin-bottom: 6px; }
+        .rv-empty p { font-size: .83rem; line-height: 1.6; }
+
+        .rv-card {
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 14px;
+            transition: box-shadow .2s;
+        }
+        .rv-card:hover { box-shadow: var(--shadow-s); }
+
+        .rv-card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .rv-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--fern), var(--sage));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .95rem;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .rv-card-meta {
+            flex: 1;
+        }
+
+        .rv-card-name {
+            font-weight: 600;
+            font-size: .92rem;
+            color: var(--ink);
+        }
+
+        .rv-card-service {
+            font-size: .78rem;
+            color: var(--stone);
+            margin-top: 2px;
+        }
+
+        .rv-card-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .rv-card-stars {
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .rv-card-date {
+            font-size: .72rem;
+            color: var(--silver);
+            margin-top: 3px;
+        }
+
+        .rv-card-comment {
+            font-size: .85rem;
+            color: var(--stone);
+            line-height: 1.7;
+            padding-top: 10px;
+            border-top: 1px solid var(--mist);
+        }
+
+        .rv-src-badge {
+            display: inline-block;
+            font-size: .67rem;
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-left: 6px;
+            font-weight: 500;
+        }
+        .rv-src-walkin { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+        .rv-src-reg { background: #e8f5ee; color: var(--fern); border: 1px solid #b6dfc6; }
+
+        /* ── Loading skeleton ── */
+        .rv-skeleton {
+            background: white;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 14px;
+        }
+        .rv-skel-line {
+            height: 12px;
+            border-radius: 6px;
+            background: linear-gradient(90deg, var(--mist) 25%, var(--pearl) 50%, var(--mist) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.4s infinite;
+            margin-bottom: 10px;
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+
+        @media (max-width: 600px) {
+            .rv-topbar { padding: 14px 18px; }
+            .rv-hero { padding: 20px 18px; gap: 18px; }
+            .rv-filters { padding: 14px 18px; }
+            .rv-content { padding: 16px 14px 50px; }
+            .rv-divider { display: none; }
+        }
+    </style>
+</head>
+<body class="reviews-page">
+
+<!-- TOP BAR -->
+<div class="rv-topbar">
+    <div class="rv-brand">
+        <div class="rv-brand-icon"></div>
+        <div class="rv-brand-text">
+            <h1><em>Shortcut's</em> Skin Care Spa</h1>
+            <p>Sta. Maria, Bulacan</p>
+        </div>
+    </div>
+    <div class="rv-topbar-actions">
+        <a href="feedback.html" class="rv-btn-leave"> Leave a Review</a>
+    </div>
+</div>
+
+<!-- HERO SUMMARY -->
+<div class="rv-hero">
+    <div class="rv-score">
+        <div class="rv-score-num" id="heroAvg">—</div>
+        <div class="rv-score-stars" id="heroStars"></div>
+        <div class="rv-score-count" id="heroCount">Loading reviews…</div>
+    </div>
+    <div class="rv-divider"></div>
+    <div class="rv-breakdown" id="ratingBreakdown">
+        <!-- Filled by JS -->
+    </div>
+    <div style="flex:1;min-width:160px;">
+        <div style="font-family:var(--font-display);font-size:1.4rem;color:var(--ink);font-weight:600;margin-bottom:4px;">What our clients say</div>
+        <p style="font-size:.82rem;color:var(--stone);line-height:1.6;">Real reviews from walk-in and registered clients of Shortcut's Skin Care Spa.</p>
+        <div style="margin-top:10px;font-size:.78rem;color:var(--stone);" id="topServiceTag"></div>
+    </div>
+</div>
+
+<!-- FILTERS -->
+<div class="rv-filters">
+    <span class="rv-filter-label">Filter by:</span>
+    <select class="rv-select" id="filterService" onchange="renderReviews()">
+        <option value="">All Services</option>
+    </select>
+    <select class="rv-select" id="filterRating" onchange="renderReviews()">
+        <option value="">All Ratings</option>
+        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+        <option value="4">⭐⭐⭐⭐ Great</option>
+        <option value="3">⭐⭐⭐ Good</option>
+        <option value="2">⭐⭐ Fair</option>
+        <option value="1">⭐ Poor</option>
+    </select>
+    <select class="rv-select" id="filterSort" onchange="renderReviews()">
+        <option value="newest">Newest first</option>
+        <option value="highest">Highest rated</option>
+        <option value="lowest">Lowest rated</option>
+    </select>
+    <span class="rv-count-tag" id="filterCountTag"></span>
+</div>
+
+<!-- REVIEW CARDS -->
+<div class="rv-content">
+    <!-- Loading skeletons -->
+    <div id="skeletons">
+        <div class="rv-skeleton"><div class="rv-skel-line" style="width:40%;"></div><div class="rv-skel-line" style="width:70%;"></div><div class="rv-skel-line" style="width:55%;"></div></div>
+        <div class="rv-skeleton"><div class="rv-skel-line" style="width:35%;"></div><div class="rv-skel-line" style="width:80%;"></div></div>
+        <div class="rv-skeleton"><div class="rv-skel-line" style="width:50%;"></div><div class="rv-skel-line" style="width:65%;"></div><div class="rv-skel-line" style="width:45%;"></div></div>
+    </div>
+    <div id="reviewsList"></div>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/firebase-init.js"></script>
+<script src="../js/shared-data.js"></script>
+<script>
+
+var STAR_FILLED = '⭐';
+var STAR_EMPTY = '';
+
+function getAllFeedback() {
+    if (typeof getFeedback === 'function') return getFeedback();
+    try { return JSON.parse(localStorage.getItem('spa_feedback') || '[]'); } catch(e) { return []; }
+}
+
+function escHtml(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function initPage() {
+    document.getElementById('skeletons').style.display = 'none';
+
+    var all = getAllFeedback();
+
+    // Summary stats
+    var total = all.length;
+    var avg = total ? (all.reduce(function(s,f){return s+(f.rating||0);},0)/total) : 0;
+    document.getElementById('heroAvg').textContent = total ? avg.toFixed(1) : '—';
+    document.getElementById('heroStars').textContent = total
+        ? STAR_FILLED.repeat(Math.round(avg)) + STAR_EMPTY.repeat(5-Math.round(avg))
+        : '';
+    document.getElementById('heroCount').textContent = total
+        ? total + ' review' + (total !== 1 ? 's' : '')
+        : 'No reviews yet';
+
+    // Rating breakdown
+    var counts = [0,0,0,0,0];
+    all.forEach(function(f){ if(f.rating>=1&&f.rating<=5) counts[f.rating-1]++; });
+    var breakdown = document.getElementById('ratingBreakdown');
+    breakdown.innerHTML = [5,4,3,2,1].map(function(star) {
+        var c = counts[star-1];
+        var pct = total ? Math.round((c/total)*100) : 0;
+        return '<div class="rv-bar-row">'
+            + '<span class="rv-bar-label">' + star + '</span>'
+            + '<div class="rv-bar-track"><div class="rv-bar-fill" style="width:' + pct + '%;"></div></div>'
+            + '<span class="rv-bar-count" style="color:var(--stone);">' + c + '</span>'
+            + '</div>';
+    }).join('');
+
+    // Top service
+    var svcMap = {};
+    all.forEach(function(f){
+        if(!f.serviceName) return;
+        if(!svcMap[f.serviceName]) svcMap[f.serviceName]={total:0,count:0};
+        svcMap[f.serviceName].total+=f.rating||0;
+        svcMap[f.serviceName].count++;
+    });
+    var topSvc='',topAvg=0;
+    Object.keys(svcMap).forEach(function(n){
+        var a=svcMap[n].total/svcMap[n].count;
+        if(a>topAvg){topAvg=a;topSvc=n;}
+    });
+    if(topSvc) document.getElementById('topServiceTag').innerHTML
+        = ' Top rated: <strong>' + escHtml(topSvc) + '</strong> (' + topAvg.toFixed(1) + ')';
+
+    // Populate service filter
+    var names=[];
+    all.forEach(function(f){if(f.serviceName&&names.indexOf(f.serviceName)===-1)names.push(f.serviceName);});
+    var sel=document.getElementById('filterService');
+    names.sort().forEach(function(n){
+        var opt=document.createElement('option');
+        opt.value=n; opt.textContent=n; sel.appendChild(opt);
+    });
+
+    // Pre-filter from URL param
+    var params=new URLSearchParams(window.location.search);
+    var svcParam=params.get('service')||'';
+    if(svcParam){
+        for(var i=0;i<sel.options.length;i++){
+            if(sel.options[i].value===svcParam||sel.options[i].value.toLowerCase()===svcParam.toLowerCase()){
+                sel.selectedIndex=i; break;
+            }
+        }
+    }
+
+    renderReviews();
+}
+
+function renderReviews() {
+    var all = getAllFeedback();
+    var filterSvc = document.getElementById('filterService').value;
+    var filterRating = document.getElementById('filterRating').value;
+    var sort = document.getElementById('filterSort').value;
+
+    var filtered = all.filter(function(f){
+        if(filterSvc && f.serviceName !== filterSvc) return false;
+        if(filterRating && String(f.rating) !== filterRating) return false;
+        return true;
+    });
+
+    // Sort
+    filtered.sort(function(a,b){
+        if(sort==='newest') return (b.id||0)-(a.id||0);
+        if(sort==='highest') return (b.rating||0)-(a.rating||0);
+        if(sort==='lowest') return (a.rating||0)-(b.rating||0);
+        return 0;
+    });
+
+    document.getElementById('filterCountTag').textContent
+        = 'Showing ' + filtered.length + ' of ' + all.length + ' reviews';
+
+    var container = document.getElementById('reviewsList');
+
+    if(filtered.length === 0){
+        container.innerHTML = '<div class="rv-empty">'
+            + '<div class="rv-empty-icon">' + (all.length ? '' : '') + '</div>'
+            + '<h3>' + (all.length ? 'No reviews match your filter.' : 'No reviews yet!') + '</h3>'
+            + '<p>' + (all.length ? 'Try a different filter.' : 'Be the first to leave a review for our services.') + '</p>'
+            + '<br/><a href="feedback.html" style="display:inline-block;margin-top:8px;background:linear-gradient(135deg,var(--fern),var(--sage));color:white;border-radius:10px;padding:10px 22px;font-size:.85rem;font-weight:500;text-decoration:none;"> Leave a Review</a>'
+            + '</div>';
+        return;
+    }
+
+    var starLabels=['','Poor','Fair','Good','Great','Excellent'];
+    var ratingColors={5:'#16a34a',4:'#22c55e',3:'#d97706',2:'#ef4444',1:'#dc2626'};
+
+    container.innerHTML = filtered.map(function(f){
+        var name = f.name || 'Anonymous';
+        var initial = name.charAt(0).toUpperCase();
+        var stars = STAR_FILLED.repeat(f.rating||0) + STAR_EMPTY.repeat(5-(f.rating||0));
+        var date = f.submittedAt
+            ? new Date(f.submittedAt).toLocaleDateString('en-PH',{month:'long',day:'numeric',year:'numeric'})
+            : '';
+        var srcBadge = f.source==='registered'
+            ? '<span class="rv-src-badge rv-src-reg">Registered Client</span>'
+            : '<span class="rv-src-badge rv-src-walkin">Walk-in</span>';
+        var rColor = ratingColors[f.rating]||'var(--stone)';
+
+        return '<div class="rv-card">'
+            + '<div class="rv-card-top">'
+            + '<div class="rv-avatar">' + escHtml(initial) + '</div>'
+            + '<div class="rv-card-meta">'
+            + '<div class="rv-card-name">' + escHtml(name) + srcBadge + '</div>'
+            + '<div class="rv-card-service"> ' + escHtml(f.serviceName||'—') + '</div>'
+            + '</div>'
+            + '<div class="rv-card-right">'
+            + '<div class="rv-card-stars" style="color:' + rColor + ';">' + stars + '</div>'
+            + '<div style="font-size:.72rem;font-weight:600;color:' + rColor + ';margin-top:2px;">' + (starLabels[f.rating]||'') + '</div>'
+            + '<div class="rv-card-date">' + date + '</div>'
+            + '</div>'
+            + '</div>'
+            + (f.comment
+                ? '<div class="rv-card-comment">"' + escHtml(f.comment) + '"</div>'
+                : '')
+            + '</div>';
+    }).join('');
+}
+
+// Load — try Firestore first, fall back to localStorage
+if(typeof syncFeedbackFromFirestore === 'function'){
+    syncFeedbackFromFirestore(function(){ initPage(); });
+} else {
+    initPage();
+}
+
+// Live updates
+if(typeof listenToFeedback === 'function'){
+    listenToFeedback(function(){ renderReviews(); });
+}
+</script>
+<script src="../js/chatbot-widget.js"></script>
+</body>
+</html>

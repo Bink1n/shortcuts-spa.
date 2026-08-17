@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leave a Review — Shortcut's Skin Care Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        body.feedback-page {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px 16px;
+            background: var(--mist);
+        }
+
+        .fb-wrap {
+            width: 100%;
+            max-width: 480px;
+            animation: riseIn .55s cubic-bezier(.22,1,.36,1) both;
+        }
+
+        .fb-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-m);
+            overflow: hidden;
+        }
+
+        .fb-header {
+            background: linear-gradient(150deg, #0D0D0D 0%, #1A1200 40%, #2A1F00 70%, #8B6914 100%);
+            padding: 32px 32px 28px;
+            text-align: center;
+            position: relative;
+        }
+
+        .fb-logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.10);
+            border: 1.5px solid rgba(255,255,255,.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 1.4rem;
+        }
+
+        .fb-spa-name {
+            font-family: var(--font-display);
+            font-size: 1.2rem;
+            color: rgba(255,255,255,.5);
+            font-weight: 300;
+            letter-spacing: .04em;
+            margin-bottom: 4px;
+        }
+
+        .fb-title {
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            color: var(--white);
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .fb-service-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            background: rgba(255,255,255,.12);
+            border: 1px solid rgba(255,255,255,.20);
+            border-radius: 100px;
+            padding: 6px 16px;
+            font-size: .8rem;
+            color: rgba(255,255,255,.85);
+            letter-spacing: .02em;
+        }
+
+        .fb-body {
+            padding: 28px 32px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .fb-section-label {
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--stone);
+            margin-bottom: 10px;
+        }
+
+        /* Star Rating */
+        .star-row {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            transition: transform .15s, color .1s;
+            font-size: 2.4rem;
+            line-height: 1;
+            color: #d1d5db;
+        }
+
+        .star-btn.active {
+            color: #f59e0b;
+            transform: scale(1.18);
+        }
+
+        .star-btn:hover {
+            color: #fbbf24;
+            transform: scale(1.18);
+        }
+
+        .star-label {
+            text-align: center;
+            font-size: .85rem;
+            color: var(--stone);
+            min-height: 20px;
+            font-weight: 500;
+            margin-top: 6px;
+        }
+
+        /* Name & email */
+        .fb-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .fb-field label {
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--ink);
+        }
+
+        .fb-field .opt-tag {
+            font-size: .72rem;
+            color: var(--stone);
+            font-weight: 400;
+            margin-left: 4px;
+        }
+
+        .fb-field input,
+        .fb-field textarea,
+        .fb-field select {
+            width: 100%;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            font-family: inherit;
+            font-size: .88rem;
+            color: var(--ink);
+            background: var(--pearl);
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .fb-field input:focus,
+        .fb-field textarea:focus,
+        .fb-field select:focus {
+            border-color: var(--fern);
+        }
+
+        .fb-field textarea {
+            resize: vertical;
+            min-height: 90px;
+            line-height: 1.6;
+        }
+
+        /* Anon toggle */
+        .anon-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: var(--mist);
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--border);
+            cursor: pointer;
+        }
+
+        .anon-row input[type=checkbox] {
+            accent-color: var(--fern);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .anon-row span {
+            font-size: .83rem;
+            color: var(--ink);
+        }
+
+        /* Submit button */
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--fern), var(--sage));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: .95rem;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: .03em;
+            transition: opacity .2s, transform .1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit:hover { opacity: .92; }
+        .btn-submit:active { transform: scale(.98); }
+        .btn-submit:disabled { opacity: .5; cursor: not-allowed; }
+
+        .spin {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.4);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+            display: none;
+            flex-shrink: 0;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Success state */
+        .fb-success {
+            display: none;
+            text-align: center;
+            padding: 48px 32px;
+        }
+
+        .success-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+        }
+
+        .success-title {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            color: var(--ink);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .success-sub {
+            font-size: .88rem;
+            color: var(--stone);
+            line-height: 1.6;
+        }
+
+        .success-stars {
+            font-size: 1.4rem;
+            margin: 14px 0;
+            letter-spacing: 2px;
+        }
+
+        /* Service selector */
+        .svc-select-wrap {
+            display: none;
+        }
+
+        /* OR divider */
+        .or-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--stone);
+            font-size: .75rem;
+        }
+        .or-divider span { flex: 1; height: 1px; background: var(--border); }
+
+        /* Google sign-in option */
+        .btn-google-small {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: var(--white);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: .85rem;
+            color: var(--ink);
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .btn-google-small:hover { background: var(--mist); }
+
+        @media (max-width: 500px) {
+            .fb-body { padding: 22px 20px 28px; }
+            .fb-header { padding: 26px 20px 22px; }
+        }
+
+        /* toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--charcoal);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 100px;
+            font-size: .85rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all .35s cubic-bezier(.22,1,.36,1);
+            z-index: 999;
+            white-space: nowrap;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body class="feedback-page">
+
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+
+<div class="fb-wrap">
+    <div class="fb-card">
+
+        <!-- HEADER -->
+        <div class="fb-header">
+            <div class="fb-logo"></div>
+            <p class="fb-spa-name">Shortcut's Skin Care Spa</p>
+            <h1 class="fb-title">How was your experience?</h1>
+            <div class="fb-service-badge" id="serviceBadge">
+                <span></span>
+                <span id="serviceNameDisplay">Loading service...</span>
+            </div>
+        </div>
+
+        <!-- FORM BODY -->
+        <div class="fb-body" id="fbForm">
+
+            <!-- Star Rating -->
+            <div>
+                <div class="fb-section-label">Your Rating</div>
+                <div class="star-row" id="starRow">
+                    <button class="star-btn" data-val="1" type="button"></button>
+                    <button class="star-btn" data-val="2" type="button"></button>
+                    <button class="star-btn" data-val="3" type="button"></button>
+                    <button class="star-btn" data-val="4" type="button"></button>
+                    <button class="star-btn" data-val="5" type="button"></button>
+                </div>
+                <p class="star-label" id="starLabel">Tap a star to rate</p>
+            </div>
+
+            <!-- Service picker (shown when no URL param) -->
+            <div class="fb-field svc-select-wrap" id="svcSelectWrap">
+                <label>Service Availed</label>
+                <select id="svcSelect">
+                    <option value="">— Select service —</option>
+                </select>
+            </div>
+
+            <!-- Name -->
+            <div class="fb-field" id="nameWrap">
+                <label>Your Name <span class="opt-tag">(optional)</span></label>
+                <input type="text" id="fbName" placeholder="e.g. Maria Santos" />
+            </div>
+
+            <!-- Email -->
+            <div class="fb-field" id="emailWrap">
+                <label>Email <span class="opt-tag">(optional — for follow-up)</span></label>
+                <input type="email" id="fbEmail" placeholder="you@email.com" />
+            </div>
+
+            <!-- Comment -->
+            <div class="fb-field">
+                <label>Tell us more <span class="opt-tag">(optional)</span></label>
+                <textarea id="fbComment" placeholder="What did you love? Any suggestions?"></textarea>
+            </div>
+
+            <!-- OR Google sign-in -->
+            <div class="or-divider"><span></span>or sign in to auto-fill<span></span></div>
+            <button class="btn-google-small" id="fbGoogleBtn" type="button">
+                <svg width="16" height="16" viewBox="0 0 48 48">
+                    <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.6 2.5 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.8l7.8 6C12.4 13.3 17.8 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.1z"/>
+                    <path fill="#FBBC05" d="M10.5 28.8A14.6 14.6 0 0 1 9.5 24c0-1.7.3-3.3.8-4.8l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6z"/>
+                    <path fill="#34A853" d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.6-5.9c-2 1.4-4.6 2.2-7.3 2.2-6.2 0-11.6-3.8-13.5-9.2l-7.9 6C6.6 42.4 14.6 48 24 48z"/>
+                </svg>
+                Continue with Google
+            </button>
+
+            <!-- Submit -->
+            <button class="btn-submit" id="fbSubmitBtn" type="button">
+                <span id="fbBtnLabel">Submit Review</span>
+                <div class="spin" id="fbSpin"></div>
+            </button>
+
+            <p style="text-align:center;font-size:.75rem;color:var(--stone);line-height:1.5;">
+                Your feedback helps us improve our services. <br/>
+                <strong>Walk-in reviews</strong> are welcome — no booking required.
+            </p>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div class="fb-success" id="fbSuccess">
+            <div class="success-icon"></div>
+            <h2 class="success-title">Thank you!</h2>
+            <div class="success-stars" id="successStars"></div>
+            <p class="success-sub">Your feedback for <strong id="successSvc"></strong> has been submitted.<br/>We appreciate you taking the time to share your experience!</p>
+            <br/>
+            <a href="reviews.html" style="display:inline-block;margin-top:4px;background:linear-gradient(135deg,var(--fern),var(--sage));color:white;border-radius:10px;padding:10px 22px;font-size:.85rem;font-weight:500;text-decoration:none;cursor:pointer;">See All Reviews →</a>
+            <p style="font-size:.8rem;color:var(--stone);margin-top:14px;">You may close this page.</p>
+        </div>
+
+    </div>
+
+    <!-- EXISTING REVIEWS for this service -->
+    <div id="existingReviewsWrap" style="margin-top:20px;display:none;">
+        <div style="background:white;border-radius:var(--radius);box-shadow:var(--shadow-m);overflow:hidden;">
+            <div style="padding:18px 24px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+                <div>
+                    <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--ink);" id="reviewsHeading">Reviews</div>
+                    <div style="font-size:.76rem;color:var(--stone);margin-top:2px;" id="reviewsSubheading"></div>
+                </div>
+                <a href="reviews.html" style="font-size:.78rem;color:var(--fern);text-decoration:none;font-weight:500;white-space:nowrap;">See all →</a>
+            </div>
+            <div id="existingReviewsList" style="padding:14px 20px 20px;display:flex;flex-direction:column;gap:12px;max-height:420px;overflow-y:auto;"></div>
+        </div>
+    </div>
+
+    <!-- Powered by -->
+    <p style="text-align:center;font-size:.72rem;color:var(--stone);margin-top:14px;opacity:.6;">
+        <em>Shortcut's Skin Care Spa</em> · Sta. Maria, Bulacan
+    </p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="../js/firebase-init.js"></script>
+<script src="../js/shared-data.js"></script>
+<script src="../js/feedback.js"></script>
+<script src="../js/chatbot-widget.js"></script>
+</body>
+</html>

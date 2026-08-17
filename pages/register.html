@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shortcut's Skin Care Spa — Create Account</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+        /* ── Role selector ── */
+        .role-selector { margin-bottom: 22px; }
+        .role-label {
+            font-size: .7rem;
+            text-transform: uppercase;
+            letter-spacing: .09em;
+            color: var(--stone, #888);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .role-tabs {
+            display: flex;
+            gap: 6px;
+            background: var(--pearl, #f5f2ee);
+            border-radius: 10px;
+            padding: 4px;
+        }
+        .role-tab {
+            flex: 1;
+            padding: 8px 0;
+            border: none;
+            border-radius: 7px;
+            background: transparent;
+            font-family: var(--font-body, 'DM Sans', sans-serif);
+            font-size: .82rem;
+            font-weight: 500;
+            color: var(--stone, #888);
+            cursor: pointer;
+            transition: background .18s, color .18s, box-shadow .18s;
+        }
+        .role-tab.active {
+            background: white;
+            color: var(--ink, #1a2b1e);
+            box-shadow: 0 1px 6px rgba(0,0,0,.1);
+        }
+
+        /* ── Two-column name row ── */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 480px) {
+            .field-row { grid-template-columns: 1fr; gap: 0; }
+        }
+
+        /* ── Strength bar ── */
+        .strength-bar-wrap {
+            display: flex;
+            gap: 4px;
+            margin-top: 7px;
+            height: 3px;
+        }
+        .strength-seg {
+            flex: 1;
+            border-radius: 3px;
+            background: var(--border, #e8e2d9);
+            transition: background .2s;
+        }
+        .strength-seg.active-weak   { background: #ef4444; }
+        .strength-seg.active-fair   { background: #f59e0b; }
+        .strength-seg.active-good   { background: var(--sage, #7aaa8a); }
+        .strength-seg.active-strong { background: var(--fern, #4a7c59); }
+        .strength-label {
+            font-size: .7rem;
+            color: var(--stone, #888);
+            margin-top: 4px;
+            min-height: 16px;
+            transition: color .2s;
+        }
+
+        /* ── Terms row ── */
+        .terms-row {
+            display: flex;
+            gap: 9px;
+            align-items: flex-start;
+            margin: 18px 0 4px;
+        }
+        .terms-row input[type="checkbox"] {
+            margin-top: 2px;
+            width: 15px;
+            height: 15px;
+            accent-color: var(--fern, #4a7c59);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .terms-row label {
+            font-size: .78rem;
+            color: var(--stone, #777);
+            line-height: 1.5;
+            cursor: pointer;
+        }
+        .terms-row label a {
+            color: var(--fern, #4a7c59);
+            text-decoration: none;
+        }
+        .terms-row label a:hover { text-decoration: underline; }
+
+        /* ── Sign-in row ── */
+        .signin-row {
+            text-align: center;
+            font-size: .8rem;
+            color: var(--stone, #888);
+            margin-top: 16px;
+        }
+        .signin-row a {
+            color: var(--fern, #4a7c59);
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .signin-row a:hover { text-decoration: underline; }
+
+        /* ── Scroll padding for register panel ── */
+        .register-panel .lp-inner {
+            padding-top: 32px;
+            padding-bottom: 32px;
+        }
+    </style>
+</head>
+
+<body class="login-page register-page">
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="page-wrap">
+        <div class="card">
+
+            <!-- LEFT BRAND PANEL -->
+            <aside class="brand-panel">
+                <div class="bp-inner">
+                    <div class="bp-logo">
+                        <div class="logo-ring">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.4">
+                                <path d="M12 2a9 9 0 0 1 9 9c0 4.5-3 8.5-7 10a10 10 0 0 1-4 0C6 19.5 3 15.5 3 11a9 9 0 0 1 9-9z" />
+                                <path d="M12 7v5l3 2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="bp-headline">
+                        <p class="bp-eyebrow">Sta. Maria, Bulacan</p>
+                        <h1 class="bp-name">
+                            <em>Shortcut's</em>
+                            <span>Skin Care Spa</span>
+                        </h1>
+                        <p class="bp-tagline">Rooted in care.<br />Designed for you.</p>
+                    </div>
+                    <div class="why-join-list" style="margin-top:28px;">
+                        <p class="why-join-label" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.5);font-weight:500;margin-bottom:14px;">Why join?</p>
+                        <div class="why-join-item" style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
+                            <span style="font-size:18px;line-height:1;"></span>
+                            <div>
+                                <p style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.9);margin:0 0 2px;">Easy Booking</p>
+                                <p style="font-size:.74rem;color:rgba(255,255,255,.5);margin:0;line-height:1.4;">Book any service anytime, no waiting in line.</p>
+                            </div>
+                        </div>
+                        <div class="why-join-item" style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px;">
+                            <span style="font-size:18px;line-height:1;"></span>
+                            <div>
+                                <p style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.9);margin:0 0 2px;">Track Your History</p>
+                                <p style="font-size:.74rem;color:rgba(255,255,255,.5);margin:0;line-height:1.4;">View past appointments and treatments at a glance.</p>
+                            </div>
+                        </div>
+                        <div class="why-join-item" style="display:flex;gap:12px;align-items:flex-start;">
+                            <span style="font-size:18px;line-height:1;"></span>
+                            <div>
+                                <p style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.9);margin:0 0 2px;">Exclusive Offers</p>
+                                <p style="font-size:.74rem;color:rgba(255,255,255,.5);margin:0;line-height:1.4;">Get notified of promos and loyalty rewards.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bp-footer">
+                        <div class="bp-rule"></div>
+                        <p class="bp-note">Join hundreds of clients already loving their glow.</p>
+                    </div>
+                </div>
+                <div class="bp-deco bp-deco-1"></div>
+                <div class="bp-deco bp-deco-2"></div>
+                <div class="bp-leaf">
+                    <svg viewBox="0 0 80 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M40 110 C40 110 5 80 5 45 C5 20 20 5 40 5 C60 5 75 20 75 45 C75 80 40 110 40 110Z"
+                            fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                        <line x1="40" y1="110" x2="40" y2="5" stroke="rgba(255,255,255,0.06)" stroke-width="1" />
+                        <line x1="10" y1="60" x2="70" y2="60" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+                        <line x1="18" y1="40" x2="62" y2="40" stroke="rgba(255,255,255,0.04)" stroke-width="1" />
+                    </svg>
+                </div>
+            </aside>
+
+            <!-- RIGHT REGISTER PANEL -->
+            <section class="login-panel register-panel">
+                <div class="lp-inner">
+
+                    <!-- Mobile logo -->
+                    <div class="mobile-logo">
+                        <div class="ml-icon"></div>
+                        <div>
+                            <p class="ml-sub">Welcome to</p>
+                            <h2 class="ml-name"><em>Shortcut's</em> Skin Care Spa</h2>
+                        </div>
+                    </div>
+
+                    <!-- Header -->
+                    <div class="lp-header">
+                        <h2 class="lp-title">Create account</h2>
+                        <p class="lp-sub">Join us and book your first appointment today</p>
+                    </div>
+
+                    <!-- Everything below is hidden once the account is created and swapped for #verifyPanel -->
+                    <div id="registerFormWrap">
+
+                    <!-- Divider -->
+                    <div class="divider">
+                        <span class="d-line"></span>
+                        <span class="d-text">fill in your details</span>
+                        <span class="d-line"></span>
+                    </div>
+
+                    <!-- Name row -->
+                    <div class="field-row">
+                        <div class="field-group">
+                            <label for="firstName">First Name</label>
+                            <div class="field-wrap">
+                                <svg class="f-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="8" r="4" />
+                                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                                </svg>
+                                <input type="text" id="firstName" placeholder="First name" autocomplete="given-name" />
+                            </div>
+                            <span class="field-hint" id="hintFirst">First name is required.</span>
+                        </div>
+                        <div class="field-group">
+                            <label for="lastName">Last Name</label>
+                            <div class="field-wrap">
+                                <svg class="f-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="8" r="4" />
+                                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                                </svg>
+                                <input type="text" id="lastName" placeholder="Last name" autocomplete="family-name" />
+                            </div>
+                            <span class="field-hint" id="hintLast">Last name is required.</span>
+                        </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="field-group">
+                        <label for="phone">Mobile Number <span style="color:var(--stone);font-weight:400;">(optional)</span></label>
+                        <div class="field-wrap">
+                            <svg class="f-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="5" y="2" width="14" height="20" rx="2" />
+                                <circle cx="12" cy="18" r="1" />
+                            </svg>
+                            <input type="text" id="phone" placeholder="09XX XXX XXXX" autocomplete="tel" maxlength="11" />
+                        </div>
+                        <span class="field-hint" id="hintPhone">Enter number (e.g. 09171234567).</span>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="field-group">
+                        <label for="regEmail">Email Address</label>
+                        <div class="field-wrap">
+                            <svg class="f-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                <path d="m2 7 10 7 10-7" />
+                            </svg>
+                            <input type="email" id="regEmail" placeholder="you@email.com" autocomplete="email" />
+                        </div>
+                        <span class="field-hint" id="hintEmail">Please enter a valid email address.</span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="field-group">
+                        <label for="regPassword">Password</label>
+                        <div class="field-wrap">
+                            <svg class="f-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            <input type="password" id="regPassword" placeholder="Min. 8 characters"
+                                autocomplete="new-password" />
+                            <button class="pw-toggle" id="pwToggle1" type="button" aria-label="Toggle password">
+                                <svg id="eyeIcon1" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                                    <line x1="1" y1="1" x2="23" y2="23" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="strength-bar-wrap">
+                            <div class="strength-seg" id="seg1"></div>
+                            <div class="strength-seg" id="seg2"></div>
+                            <div class="strength-seg" id="seg3"></div>
+                            <div class="strength-seg" id="seg4"></div>
+                        </div>
+                        <p class="strength-label" id="strengthLabel"></p>
+                        <span class="field-hint" id="hintPass">Password must be at least 8 characters.</span>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="field-group">
+                        <label for="regConfirm">Confirm Password</label>
+                        <div class="field-wrap">
+                            <svg class="f-icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
+                            <input type="password" id="regConfirm" placeholder="Re-enter password"
+                                autocomplete="new-password" />
+                            <button class="pw-toggle" id="pwToggle2" type="button" aria-label="Toggle confirm">
+                                <svg id="eyeIcon2" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94" />
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19" />
+                                    <line x1="1" y1="1" x2="23" y2="23" />
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="field-hint" id="hintConfirm">Passwords do not match.</span>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="terms-row">
+                        <input type="checkbox" id="terms" />
+                        <label for="terms">
+                            I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a> of
+                            Shortcut's Skin Care Spa.
+                        </label>
+                    </div>
+                    <span class="field-hint" id="hintTerms">You must agree to the terms to continue.</span>
+
+                    <!-- Register button -->
+                    <button class="btn-signin" id="registerBtn" style="margin-top:18px;">
+                        <span id="regBtnLabel">Create Account</span>
+                        <div class="spin" id="regSpin"></div>
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="divider" style="margin-top:18px;">
+                        <span class="d-line"></span>
+                        <span class="d-text">or</span>
+                        <span class="d-line"></span>
+                    </div>
+
+                    <!-- Google -->
+                    <button class="btn-google" id="googleRegBtn">
+                        <svg width="18" height="18" viewBox="0 0 48 48">
+                            <path fill="#EA4335"
+                                d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.6 2.5 30.1 0 24 0 14.6 0 6.6 5.6 2.7 13.8l7.8 6C12.4 13.3 17.8 9.5 24 9.5z" />
+                            <path fill="#4285F4"
+                                d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.1z" />
+                            <path fill="#FBBC05"
+                                d="M10.5 28.8A14.6 14.6 0 0 1 9.5 24c0-1.7.3-3.3.8-4.8l-7.8-6A23.9 23.9 0 0 0 0 24c0 3.9.9 7.5 2.6 10.8l7.9-6z" />
+                            <path fill="#34A853"
+                                d="M24 48c6.1 0 11.2-2 14.9-5.4l-7.6-5.9c-2 1.4-4.6 2.2-7.3 2.2-6.2 0-11.6-3.8-13.5-9.2l-7.9 6C6.6 42.4 14.6 48 24 48z" />
+                        </svg>
+                        <span>Sign up with Google</span>
+                    </button>
+
+                    <p class="signin-row">Already have an account? <a href="../index.html">Sign in →</a></p>
+
+                    </div>
+                    <!-- /#registerFormWrap -->
+
+                    <!-- ── Email verification screen (shown after successful sign-up) ── -->
+                    <div id="verifyPanel" style="display:none;text-align:center;padding:10px 0;">
+                        <div style="width:56px;height:56px;border-radius:50%;background:var(--pearl,#f5f2ee);display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--fern,#4a7c59)" stroke-width="1.6">
+                                <rect x="2" y="4" width="20" height="16" rx="2" /><path d="m2 7 10 7 10-7" />
+                            </svg>
+                        </div>
+                        <h2 class="lp-title" style="margin-bottom:8px;">Check your email</h2>
+                        <p class="lp-sub" style="margin-bottom:24px;">
+                            We sent a verification link to <strong id="verifyEmailLabel"></strong>.
+                            Click it, then come back here.
+                        </p>
+                        <button class="btn-signin" id="verifyCheckBtn" style="margin-bottom:12px;">
+                            <span id="verifyCheckLabel">I've verified — Continue</span>
+                            <div class="spin" id="verifyCheckSpin"></div>
+                        </button>
+                        <p class="signin-row" style="margin-top:8px;">
+                            Didn't get it?
+                            <a href="#" id="resendVerifyRegLink">Resend verification email</a>
+                        </p>
+                        <p class="signin-row">Already have an account? <a href="../index.html">Sign in →</a></p>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-init.js"></script>
+    <script src="../js/shared-data.js"></script>
+
+    <script>
+        // Role is always client — staff is created by admin
+        var currentRegRole = 'client';
+
+        // ── Stubs so register.js doesn't crash on removed elements ──
+        var uploadedPhotoBase64 = null;
+        var selectedAvatar = '';
+
+        document.addEventListener('DOMContentLoaded', function () {
+            ['photoCircle','photoPreview','photoInput','btnUploadPhoto','btnRemovePhoto','emojiSection','gender','avatarPicker']
+                .forEach(function(id) {
+                    if (!document.getElementById(id)) {
+                        var el = document.createElement('div');
+                        el.id = id;
+                        el.style.display = 'none';
+                        document.body.appendChild(el);
+                    }
+                });
+        });
+    </script>
+
+    <script src="../js/register.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Dashboard — Shortcut's Spa</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <!-- Back-button / cache protection -->
+    <script>
+        (function () {
+            function checkSession() {
+                var u = null;
+                try { u = JSON.parse(localStorage.getItem('spa_user')); } catch (e) {}
+                if (!u || u.role !== 'staff') {
+                    window.location.replace('../index.html');
+                }
+            }
+            checkSession();
+            window.addEventListener('pageshow', function (e) {
+                if (e.persisted) checkSession();
+            });
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar sidebar-staff" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-mark"><img src="../Spa_logo.jpg" alt="Logo" class="logo-img" /></div>
+            <h2><em>Shortcut's</em> Spa</h2>
+            <p>Staff Portal</p>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-section-label">Schedule</p>
+            <a class="nav-item active" href="#" onclick="return showSection('today')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>Today</a>
+            <a class="nav-item" href="#" onclick="return showSection('confirmations')" style="position:relative;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                </svg>Confirmations
+                <span id="confirmBadge" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:#ef4444;color:white;font-size:.6rem;font-weight:700;min-width:17px;height:17px;border-radius:100px;align-items:center;justify-content:center;padding:0 4px;"></span>
+            </a>
+            <a class="nav-item" href="#" onclick="return showSection('week')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>This Week</a>
+            <a class="nav-item" href="#" onclick="return showSection('clients')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M2 21c0-4 3.1-7 7-7" />
+                    <circle cx="17" cy="11" r="3" />
+                    <path d="M14 21c0-2.5 1.3-4.5 3-5" />
+                </svg>My Clients</a>
+            <p class="nav-section-label">Reference</p>
+            <a class="nav-item" href="#" onclick="return showSection('services')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 3H5a2 2 0 0 0-2 2v4" />
+                    <path d="M9 21H5a2 2 0 0 1-2-2v-4" />
+                    <path d="M15 3h4a2 2 0 0 1 2 2v4" />
+                    <path d="M15 21h4a2 2 0 0 0 2-2v-4" />
+                    <rect x="7" y="7" width="10" height="10" rx="1" />
+                </svg>Service Menu</a>
+            <p class="nav-section-label">Account</p>
+            <a class="nav-item" href="#" onclick="return showSection('profile')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>My Profile</a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar" id="sidebarAvatar">S</div>
+            <div class="user-info">
+                <div class="user-name" id="sidebarName">Staff</div>
+                <div class="user-role">Staff</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg></button>
+        </div>
+    </aside>
+
+    <div class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 id="pageTitle">Today's Schedule</h1>
+                <p id="pageSubtitle"></p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="notif-bell-wrap">
+                    <button class="notif-bell-btn" id="notifBellBtn" onclick="toggleStaffNotifDropdown(event)"
+                        aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        <span class="notif-badge" id="notifBadge">0</span>
+                    </button>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">Notifications</div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-empty">No notifications yet.</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="menu-toggle" id="menuToggle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg></button>
+            </div>
+        </header>
+
+        <div class="content">
+            <div id="section-today">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"></div>
+                        <div class="stat-val" id="statTotal">0</div>
+                        <div class="stat-label">Sessions Today</div>
+                        <div class="stat-delta" id="statRemaining">&nbsp;</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"></div>
+                        <div class="stat-val" id="statDone">0</div>
+                        <div class="stat-label">Completed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-val" id="statPending">0</div>
+                        <div class="stat-label">Upcoming</div>
+                        <div class="stat-delta" id="statNext">&nbsp;</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"></div>
+                        <div class="stat-val" id="statCatalog">0</div>
+                        <div class="stat-label">Services in Catalog</div>
+                    </div>
+                </div>
+                <div class="section-header">
+                    <h2 class="section-title">Today's Appointments</h2>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Duration</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="todayTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CONFIRMATIONS -->
+            <div id="section-confirmations" style="display:none;">
+                <div id="confirmList" style="max-width:640px;"></div>
+            </div>
+
+            <div id="section-week" style="display:none;">
+                <div class="day-filter" id="dayFilter">
+                    <button class="day-btn active" onclick="filterDay(this,'all')">All</button>
+                    <button class="day-btn" onclick="filterDay(this,'Mon')">Mon</button>
+                    <button class="day-btn" onclick="filterDay(this,'Tue')">Tue</button>
+                    <button class="day-btn" onclick="filterDay(this,'Wed')">Wed</button>
+                    <button class="day-btn" onclick="filterDay(this,'Thu')">Thu</button>
+                    <button class="day-btn" onclick="filterDay(this,'Fri')">Fri</button>
+                    <button class="day-btn" onclick="filterDay(this,'Sat')">Sat</button>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Day</th>
+                                <th>Time</th>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weekTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="section-clients" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">My Clients</h2>
+                </div>
+                <div id="clientCards"
+                    style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;">
+                </div>
+            </div>
+
+            <!-- SERVICE MENU (read from shared catalog) -->
+            <div id="section-services" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Service Menu &amp; Pricing</h2><span id="staffSvcCount"
+                        style="font-size:.78rem;color:var(--stone);"></span>
+                </div>
+                <div class="search-wrap"><svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg><input class="search-bar" type="text" id="staffSvcSearch" placeholder="Search services..."
+                        oninput="renderStaffSvcs()" /></div>
+                <div class="cat-tabs staff-cat-tabs" id="staffCatTabs"></div>
+                <div class="svc-list" id="staffSvcList"></div>
+            </div>
+
+            <div id="section-profile" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:24px;">My Profile</h2>
+                <div
+                    style="background:white;border:1px solid var(--border);border-radius:16px;padding:28px;max-width:480px;">
+                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+                        <div class="user-avatar" style="width:60px;height:60px;font-size:22px;" id="profileAvatar">S
+                        </div>
+                        <div>
+                            <div style="font-size:1.1rem;font-weight:500;" id="profileName">Staff</div>
+                            <div style="font-size:.78rem;color:var(--stone);" id="profileEmail"></div>
+                            <div
+                                style="font-size:.7rem;background:var(--blue-lt);color:var(--blue);padding:2px 9px;border-radius:100px;display:inline-block;margin-top:4px;">
+                                Staff Member</div>
+                        </div>
+                    </div>
+                    <div style="margin-bottom:14px;"><label
+                            style="font-size:.71rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px;">Full
+                            Name</label><input type="text" id="nameInput"
+                            style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--font-body);font-size:.87rem;outline:none;" />
+                    </div>
+                    <div style="margin-bottom:14px;"><label
+                            style="font-size:.71rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:6px;">Specialization</label><input
+                            type="text" id="specInput"
+                            style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--font-body);font-size:.87rem;outline:none;"
+                            value="Facial & Nail Services" /></div>
+                    <button onclick="saveStaffProfile()"
+                        style="padding:12px 24px;background:linear-gradient(135deg,#1e3448,#2a4a5e);border:none;border-radius:10px;color:white;font-family:var(--font-body);font-size:.87rem;font-weight:500;cursor:pointer;">Save
+                        Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast toast-staff" id="toast"></div>
+
+    <!-- DECLINE MODAL -->
+    <div class="modal-overlay" id="declineModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Decline Appointment</div>
+                <button class="modal-close" onclick="closeDeclineModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <p style="font-size:.82rem;color:var(--stone);margin-bottom:16px;line-height:1.6;">
+                Please provide a reason. The client will be notified and the admin can reassign the appointment.
+            </p>
+            <div class="form-group">
+                <label>Reason for Declining</label>
+                <select id="declineReason" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--font-body);font-size:.87rem;outline:none;background:white;margin-bottom:10px;">
+                    <option value="">— Select a reason —</option>
+                    <option value="Prior appointment conflict">Prior appointment conflict</option>
+                    <option value="On leave / day off">On leave / day off</option>
+                    <option value="Outside my specialization">Outside my specialization</option>
+                    <option value="Personal emergency">Personal emergency</option>
+                    <option value="Other">Other (see note)</option>
+                </select>
+                <input type="text" id="declineReasonOther" placeholder="Additional note (optional)" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-family:var(--font-body);font-size:.87rem;outline:none;box-sizing:border-box;" />
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeDeclineModal()">Cancel</button>
+                <button class="btn-primary" style="background:linear-gradient(135deg,#dc2626,#b91c1c);" onclick="submitDecline()">Decline &amp; Notify</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-init.js"></script>
+    <script src="../js/shared-data.js"></script>
+    <script src="../js/shared/authGuard.js"></script>
+    <script src="../js/shared/sessionTimeout.js"></script>
+
+    <!-- BOTTOM NAV (mobile) -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bn-item active" onclick="showSection('today');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            <div class="bn-dot"></div>
+            Today
+        </button>
+        <button class="bn-item" onclick="showSection('confirmations');setBnActive(this)" style="position:relative;">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+            <div class="bn-dot"></div>
+            Confirm
+        </button>
+        <button class="bn-item" onclick="showSection('week');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+            </svg>
+            <div class="bn-dot"></div>
+            Week
+        </button>
+        <button class="bn-item" onclick="showSection('clients');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <circle cx="9" cy="7" r="4" />
+                <path d="M2 21c0-4 3.1-7 7-7" />
+                <circle cx="17" cy="11" r="3" />
+            </svg>
+            <div class="bn-dot"></div>
+            Clients
+        </button>
+        <button class="bn-item" onclick="showSection('services');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="7" y="7" width="10" height="10" rx="1" />
+                <path d="M9 3H5a2 2 0 0 0-2 2v4" />
+                <path d="M15 3h4a2 2 0 0 1 2 2v4" />
+            </svg>
+            <div class="bn-dot"></div>
+            Services
+        </button>
+        <button class="bn-item" onclick="showSection('profile');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+            <div class="bn-dot"></div>
+            Profile
+        </button>
+    </nav>
+
+    <script src="../js/staff-bundle.js"></script>
+</body>
+
+</html>

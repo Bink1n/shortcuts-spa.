@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard — Shortcut's Spa</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        .appt-range-pill {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 100px;
+            border: 1.5px solid var(--mist);
+            background: var(--pearl);
+            color: var(--stone);
+            cursor: pointer;
+            transition: all .15s;
+            white-space: nowrap;
+        }
+
+        .appt-range-pill:hover {
+            border-color: var(--sage);
+            color: var(--fern);
+        }
+
+        .appt-range-pill.active {
+            background: var(--fern);
+            border-color: var(--fern);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar sidebar-admin" id="sidebar">
+        <div class="sidebar-logo">
+            <!-----------------------logo-------------------------->
+            <h2><em>Shortcut's</em> Spa</h2>
+            <p>Admin Panel</p>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-section-label">Overview</p>
+            <a class="nav-item active" href="#" onclick="return showSection('overview')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>Dashboard</a>
+            <p class="nav-section-label">Manage</p>
+            <a class="nav-item" href="#" onclick="return showSection('appointments')"
+                style="display:flex;align-items:center;justify-content:space-between;"><span
+                    style="display:flex;align-items:center;gap:8px;"><svg width="15" height="15" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                        <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>Appointments</span><span id="pendingNavBadge"
+                    style="display:none;background:#ef4444;color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;padding:0 5px;line-height:18px;text-align:center;"></span></a>
+            <a class="nav-item" href="#" onclick="return showSection('services')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 3H5a2 2 0 0 0-2 2v4" />
+                    <path d="M9 21H5a2 2 0 0 1-2-2v-4" />
+                    <path d="M15 3h4a2 2 0 0 1 2 2v4" />
+                    <path d="M15 21h4a2 2 0 0 0 2-2v-4" />
+                    <rect x="7" y="7" width="10" height="10" rx="1" />
+                </svg>Services & Pricing</a>
+            <a class="nav-item" href="#" onclick="return showSection('clients')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M2 21c0-4 3.1-7 7-7h5" />
+                    <circle cx="17" cy="11" r="3" />
+                    <path d="M14 21c0-2.5 1.3-4.5 3-5" />
+                </svg>Clients</a>
+            <a class="nav-item" href="#" onclick="return showSection('staff')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>Staff</a>
+            <a class="nav-item" href="#" onclick="return showSection('messages')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>Messages</a>
+            <a class="nav-item" href="#" onclick="return showSection('chatbot')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                </svg>Chatbot</a>
+            <p class="nav-section-label">Analytics</p>
+            <a class="nav-item" href="#" onclick="return showSection('reports')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 3v18h18" />
+                    <path d="m7 16 4-4 4 4 4-6" />
+                </svg>Reports</a>
+            <a class="nav-item" href="#" onclick="return showSection('feedback')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                    <path d="M8 10h8M8 14h5" />
+                </svg>Feedback</a>
+            <a class="nav-item" href="#" onclick="return showSection('users')"><svg width="15" height="15"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>Users</a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar" id="sidebarAvatar">A</div>
+            <div class="user-info">
+                <div class="user-name" id="sidebarName">Admin</div>
+                <div class="user-role">Administrator</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg></button>
+        </div>
+    </aside>
+
+    <div class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 id="pageTitle">Dashboard</h1>
+                <p id="pageSubtitle"></p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="notif-bell-wrap">
+                    <button class="notif-bell-btn" id="notifBellBtn" onclick="toggleNotifDropdown(event)" aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        <span class="notif-badge" id="notifBadge">0</span>
+                    </button>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">Notifications</div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-empty">No notifications yet.</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="menu-toggle" id="menuToggle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg></button>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <!-- OVERVIEW -->
+            <div id="section-overview">
+                <div class="stats-grid">
+                    <div class="stat-card purple">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-val" id="statApptToday">0</div>
+                        <div class="stat-label">Today's Appointments</div>
+                        <div class="stat-delta" id="statPendingCount">— pending</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-val" id="statCompleted">0</div>
+                        <div class="stat-label">Completed Services</div>
+                        <div class="stat-delta delta-up">All time</div>
+                    </div>
+                    <div class="stat-card amber">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-val" id="statTodayRevenue">₱0</div>
+                        <div class="stat-label">Revenue Today</div>
+                        <div class="stat-delta" id="statTotalRevenue">₱0 total</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-icon">🧴</div>
+                        <div class="stat-val" id="statSvcCount">0</div>
+                        <div class="stat-label">Services in Catalog</div>
+                        <div class="stat-delta delta-up">View &amp; manage →</div>
+                    </div>
+                </div>
+
+                <!-- ── QUICK ACTIONS ── -->
+                <div class="quick-actions-grid">
+                    <button class="quick-action-card" onclick="openApptModal()">
+                        <div class="qa-icon">📅</div><span>+ Add Appointment</span>
+                    </button>
+                    <button class="quick-action-card" onclick="showSection('services')">
+                        <div class="qa-icon">🧴</div><span>+ Add Service</span>
+                    </button>
+                    <button class="quick-action-card" onclick="showSection('reports')">
+                        <div class="qa-icon">📊</div><span>Generate Report</span>
+                    </button>
+                </div>
+
+                <div class="two-col">
+                    <div class="panel revenue-chart-panel">
+                        <div class="panel-header-row">
+                            <div>
+                                <h3 class="panel-title">Revenue Overview</h3>
+                                <p class="panel-sub">Weekly revenue performance</p>
+                            </div>
+                            <div class="panel-menu-btn" id="revMenuBtn" onclick="toggleRevenueDropdown(event)">•••</div>
+                        </div>
+                        <div class="revenue-canvas-wrap">
+                            <canvas id="revenueLineChart" class="chart-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="panel popular-services-panel">
+                        <div>
+                            <h3 class="panel-title">Popular Services</h3>
+                            <p class="panel-sub">This month's service distribution</p>
+                        </div>
+                        <div class="donut-wrap">
+                            <canvas id="popularDonutChart" class="chart-canvas"></canvas>
+                        </div>
+                        <div id="donutLegend" class="donut-legend"></div>
+                    </div>
+                </div>
+                <!-- ── APPOINTMENT CALENDAR ── -->
+                <div class="panel" style="margin-bottom:24px;">
+                    <div class="panel-header-row" style="margin-bottom:16px;">
+                        <div>
+                            <h3 class="panel-title">Appointment Calendar</h3>
+                            <p class="panel-sub">Click any date to view bookings</p>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <button onclick="calPrevMonth()"
+                                style="background:none;border:1.5px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:background .15s;"
+                                onmouseover="this.style.background='var(--mist)'"
+                                onmouseout="this.style.background='none'">‹</button>
+                            <span id="calMonthLabel" onclick="toggleMonthPicker(event)" title="Pick a month"
+                                style="font-weight:600;font-size:.95rem;color:var(--ink);min-width:130px;text-align:center;cursor:pointer;border-radius:8px;padding:4px 10px;transition:background .15s;"
+                                onmouseover="this.style.background='var(--mist)'"
+                                onmouseout="this.style.background='none'"></span>
+                            <button onclick="calNextMonth()"
+                                style="background:none;border:1.5px solid var(--border);border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:1rem;color:var(--ink);display:flex;align-items:center;justify-content:center;transition:background .15s;"
+                                onmouseover="this.style.background='var(--mist)'"
+                                onmouseout="this.style.background='none'">›</button>
+                        </div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;">
+                        <div
+                            style="text-align:center;font-size:.7rem;font-weight:600;color:var(--stone);padding:4px 0;">
+                            SUN</div>
+                        <div
+                            style="text-align:center;font-size:.7rem;font-weight:600;color:var(--stone);padding:4px 0;">
+                            MON</div>
+                        <div
+                            style="text-align:center;font-size:.7rem;font-weight:600;color:var(--stone);padding:4px 0;">
+                            TUE</div>
+                        <div
+                            style="text-align:center;font-size:.7rem;font-weight:600;color:var(--stone);padding:4px 0;">
+                            WED</div>
+                        <div
+                            style="text-align:center;font-size:.7rem;font-weight:600;color:var(--stone);padding:4px 0;">
+                            THU</div>
+                        <div
+                            style="text-align:center;font-size:.7rem;font-weight:600;color:var(--stone);padding:4px 0;">
+                            FRI</div>
+                        <div
+                            style="text-align:center;font-size:.7rem;font-weight:600;color:var(--stone);padding:4px 0;">
+                            SAT</div>
+                    </div>
+                    <div id="calGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+                </div>
+
+                <!-- Calendar day modal -->
+                <div class="modal-overlay" id="calDayModal" onclick="if(event.target===this)closeModal('calDayModal')">
+                    <div class="modal" style="max-width:400px;width:92%;">
+                        <div class="modal-header" style="padding-bottom:12px;">
+                            <div class="modal-title" id="calDayTitle" style="font-size:.95rem;">📅 Appointments</div>
+                            <button class="modal-close" onclick="closeModal('calDayModal')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18" />
+                                    <line x1="6" y1="6" x2="18" y2="18" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="calDayList"
+                            style="display:flex;flex-direction:column;gap:8px;max-height:320px;overflow-y:auto;"></div>
+                        <div class="modal-actions"
+                            style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+                            <button class="btn-cancel" onclick="closeModal('calDayModal')"
+                                style="font-size:.82rem;padding:7px 14px;">Close</button>
+                            <button class="btn-modal-primary"
+                                onclick="closeModal('calDayModal');showSection('appointments')"
+                                style="font-size:.82rem;padding:7px 16px;">View All →</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h2 class="section-title">Recent Appointments</h2><button class="btn-primary"
+                        onclick="showSection('appointments')">View All</button>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Staff</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentAppts"></tbody>
+                    </table>
+                </div>
+
+                <!-- ── RECENT ACTIVITY + TOP SERVICES ── -->
+                <div class="two-col">
+                    <div class="panel">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-timeline" id="activityTimeline">
+                            <div class="notif-empty">No recent activity yet.</div>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h3>Top Services</h3>
+                        <div id="topServicesList">
+                            <div class="notif-empty">Not enough data yet.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── RECENT FEEDBACK ── -->
+                <div class="section-header">
+                    <h2 class="section-title">Recent Feedback</h2><button class="btn-primary"
+                        onclick="showSection('feedback')">View All</button>
+                </div>
+                <div class="panel" style="margin-bottom:24px;">
+                    <div class="feedback-mini-grid" id="recentFeedbackGrid">
+                        <div class="notif-empty">No feedback yet.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPOINTMENTS -->
+            <div id="section-appointments" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">All Appointments</h2>
+                    <div style="display:flex;gap:8px;align-items:center;">
+                        <div style="display:flex;border:1.5px solid var(--border);border-radius:100px;overflow:hidden;">
+                            <button class="appt-view-toggle-btn active" id="apptViewListBtn"
+                                onclick="setApptView('list')">List</button>
+                            <button class="appt-view-toggle-btn" id="apptViewCalBtn"
+                                onclick="setApptView('calendar')">Calendar</button>
+                        </div>
+                        <button class="btn-primary" onclick="openApptModal()">+ New Appointment</button>
+                    </div>
+                </div>
+
+                <!-- ── SUMMARY CARDS ── -->
+                <div class="appt-summary-grid">
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon">📅</div>
+                        <div class="appt-summary-val" id="asToday">0</div>
+                        <div class="appt-summary-label">Today's Appointments</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#fef3c7;">⏳</div>
+                        <div class="appt-summary-val" id="asPending">0</div>
+                        <div class="appt-summary-label">Pending</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#dbeafe;">✅</div>
+                        <div class="appt-summary-val" id="asConfirmed">0</div>
+                        <div class="appt-summary-label">Confirmed</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#dcfce7;">🏁</div>
+                        <div class="appt-summary-val" id="asCompleted">0</div>
+                        <div class="appt-summary-label">Completed</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#fee2e2;">🚫</div>
+                        <div class="appt-summary-val" id="asCancelled">0</div>
+                        <div class="appt-summary-label">Cancelled</div>
+                    </div>
+                </div>
+
+                <div class="filter-bar">
+                    <div style="position:relative;flex:1;min-width:200px;">
+                        <input type="text" class="search-input" placeholder="Search appointments..." id="apptSearch"
+                            oninput="onApptSearchInput()" style="width:100%;padding-right:30px;" />
+                        <button id="apptSearchClear" onclick="clearApptSearch()" aria-label="Clear search" type="button"
+                            style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;color:var(--stone);font-size:.85rem;">✕</button>
+                    </div>
+                    <select class="filter-select" id="apptStatusFilter" onchange="renderAllAppts()">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="staff_declined">⚠ Staff Declined</option>
+                        <option value="done">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <select class="filter-select" id="apptServiceFilter" onchange="renderAllAppts()">
+                        <option value="">All Services</option>
+                    </select>
+                </div>
+                <!-- Date range filter pills -->
+                <div id="apptDateFilterBar"
+                    style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;">
+                    <span style="font-size:11px;color:var(--stone);font-weight:500;margin-right:2px;">Date:</span>
+                    <button class="appt-range-pill active" data-range="all"
+                        onclick="setApptRange('all',this)">All</button>
+                    <button class="appt-range-pill" data-range="today"
+                        onclick="setApptRange('today',this)">Today</button>
+                    <button class="appt-range-pill" data-range="week" onclick="setApptRange('week',this)">This
+                        Week</button>
+                    <button class="appt-range-pill" data-range="month" onclick="setApptRange('month',this)">This
+                        Month</button>
+                    <button class="appt-range-pill" data-range="custom" onclick="setApptRange('custom',this)">Custom
+                        ▾</button>
+                    <span id="apptCustomRange" style="display:none;align-items:center;gap:6px;">
+                        <input type="date" id="apptDateFrom" onchange="renderAllAppts()"
+                            style="font-size:.78rem;padding:4px 8px;border:1px solid var(--mist);border-radius:6px;color:var(--ink);background:var(--pearl);" />
+                        <span style="font-size:.78rem;color:var(--stone);">to</span>
+                        <input type="date" id="apptDateTo" onchange="renderAllAppts()"
+                            style="font-size:.78rem;padding:4px 8px;border:1px solid var(--mist);border-radius:6px;color:var(--ink);background:var(--pearl);" />
+                    </span>
+                    <span id="apptRangeCount" style="font-size:.75rem;color:var(--stone);margin-left:4px;"></span>
+                </div>
+
+                <!-- LIST VIEW -->
+                <div id="apptListView">
+                    <div class="data-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Client</th>
+                                    <th>Service</th>
+                                    <th>Date &amp; Time</th>
+                                    <th>Staff</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allApptTable"></tbody>
+                        </table>
+                    </div>
+                    <div class="appt-pagination-bar">
+                        <span id="apptPageInfo" style="font-size:.78rem;color:var(--stone);"></span>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <label style="font-size:.75rem;color:var(--stone);">Show:</label>
+                            <select class="filter-select" id="apptPageSize" onchange="onApptPageSizeChange()"
+                                style="padding:4px 8px;font-size:.78rem;">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                            </select>
+                            <button class="t-action" id="apptPrevBtn" onclick="goApptPage(-1)">‹ Prev</button>
+                            <button class="t-action" id="apptNextBtn" onclick="goApptPage(1)">Next ›</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CALENDAR VIEW -->
+                <div id="apptCalendarView" class="panel" style="display:none;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                        <button class="t-action" onclick="apptCalPrevMonth()">‹</button>
+                        <strong id="apptCalMonthLabel" style="font-size:.95rem;"></strong>
+                        <button class="t-action" onclick="apptCalNextMonth()">›</button>
+                    </div>
+                    <div
+                        style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;font-size:.7rem;color:var(--stone);text-align:center;font-weight:600;">
+                        <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                    </div>
+                    <div id="apptCalGrid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+                </div>
+            </div>
+
+            <!-- SERVICES & PRICING -->
+            <div id="section-services" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Services &amp; Pricing</h2>
+                </div>
+
+                <!-- Stats bar -->
+                <div
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px;">
+                    <div style="background:var(--pearl);border-radius:10px;padding:12px 14px;">
+                        <div
+                            style="font-size:11px;color:var(--stone);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">
+                            Total Services</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--ink);" id="svcStatTotal">0</div>
+                    </div>
+                    <div style="background:var(--pearl);border-radius:10px;padding:12px 14px;">
+                        <div
+                            style="font-size:11px;color:var(--stone);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">
+                            Categories</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--ink);" id="svcStatCats">0</div>
+                    </div>
+                    <div style="background:var(--pearl);border-radius:10px;padding:12px 14px;">
+                        <div
+                            style="font-size:11px;color:var(--stone);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">
+                            Avg. Price</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--ink);" id="svcStatAvg">—</div>
+                    </div>
+                    <div style="background:var(--pearl);border-radius:10px;padding:12px 14px;">
+                        <div
+                            style="font-size:11px;color:var(--stone);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">
+                            Highest Price</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--ink);" id="svcStatHigh">—</div>
+                    </div>
+                </div>
+
+                <!-- Toolbar -->
+                <div class="filter-bar" style="margin-bottom:14px;">
+                    <input type="text" class="search-input" placeholder="Search services..." id="svcSearch"
+                        oninput="renderServicesCards()" />
+                    <select class="filter-select" id="svcCatFilter" onchange="renderServicesCards()">
+                        <option value="">All Categories</option>
+                    </select>
+                    <button class="btn-primary" onclick="openSvcModal()">+ Add Service</button>
+                </div>
+
+                <!-- Global add form (shown when + Add Service clicked) -->
+                <div id="svcGlobalAddForm"
+                    style="display:none;background:var(--pearl);border-radius:12px;border:1.5px solid var(--border);padding:16px;margin-bottom:18px;">
+                    <div style="font-size:13px;font-weight:600;color:var(--ink);margin-bottom:12px;"
+                        id="svcGlobalAddTitle">New Service</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                        <input class="search-input" id="gSvcName" placeholder="Service name"
+                            style="grid-column:1/-1;" />
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+                        <select class="filter-select" id="gSvcCat" style="width:100%;"></select>
+                        <input class="search-input" id="gSvcPrice" placeholder="Price e.g. ₱500" />
+                    </div>
+                    <input class="search-input" id="gSvcDur" placeholder="Duration e.g. 60 min or 2 sessions"
+                        style="width:100%;margin-bottom:10px;" />
+                    <div style="display:flex;gap:8px;justify-content:flex-end;">
+                        <button class="btn-cancel" onclick="closeGlobalSvcAdd()">Cancel</button>
+                        <button class="btn-modal-primary" onclick="saveGlobalSvc()">Save Service</button>
+                    </div>
+                </div>
+
+                <!-- Category cards container -->
+                <div id="svcCardContainer"></div>
+            </div>
+
+            <!-- CLIENTS -->
+            <div id="section-clients" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Client Management</h2>
+                </div>
+                <div class="filter-bar"><input type="text" class="search-input" placeholder="Search clients..."
+                        id="clientSearch" oninput="renderClients()" /></div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Visits</th>
+                                <th>Last Visit</th>
+                                <th>Loyalty</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- STAFF -->
+            <div id="section-staff" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Staff Management</h2><button class="btn-primary"
+                        onclick="openStaffModal()">+ Add
+                        Staff</button>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialization</th>
+                                <th>Sessions Today</th>
+                                <th>Status</th>
+                                <th>Availability</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MESSAGES -->
+            <div id="section-messages" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Messages &amp; Promos</h2>
+                    <button class="btn-primary" onclick="openComposeModal()">✉ Compose Message</button>
+                </div>
+
+                <!-- Client Chats -->
+                <h3 style="font-size:.95rem;font-weight:700;margin:0 0 12px;color:var(--ink);">💬 Client Chats</h3>
+                <div class="panel" style="margin-bottom:28px;padding:0;overflow:hidden;">
+                    <div class="admin-chat-split">
+                        <div id="convList" class="admin-chat-list">
+                            <div class="notif-empty">Loading conversations...</div>
+                        </div>
+                        <div class="admin-chat-main">
+                            <div id="convThreadHeader" class="admin-chat-header">Select a conversation</div>
+                            <div id="convThread" class="admin-chat-thread"></div>
+                            <div id="convInputRow" class="admin-chat-input-row" style="display:none;">
+                                <textarea id="convInput" rows="1" placeholder="Type a reply..." maxlength="1000"
+                                    onkeydown="onConvInputKeydown(event)"></textarea>
+                                <button class="btn-primary" id="convSendBtn" onclick="sendAdminReply()"
+                                    aria-label="Send reply">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2">
+                                        <line x1="22" y1="2" x2="11" y2="13" />
+                                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sent messages list -->
+                <h3 style="font-size:.95rem;font-weight:700;margin:0 0 12px;color:var(--ink);">📢 Sent Broadcasts
+                </h3>
+                <div id="msgSentList"></div>
+            </div>
+
+            <!-- REPORTS -->
+            <div id="section-reports" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title section-title--spaced">Analytics &amp; Reports</h2>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn-primary" id="backupBtn" onclick="exportBackup()">⬇ Backup Data</button>
+                    </div>
+                </div>
+
+                <!-- Filters: service / status -->
+                <div class="filter-bar">
+                    <select class="filter-select" id="rptServiceFilter" onchange="renderReports()">
+                        <option value="">All Services</option>
+                    </select>
+                    <select class="filter-select" id="rptStatusFilter" onchange="renderReports()">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                        <option value="done">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="staff_declined">⚠ Staff Declined</option>
+                    </select>
+                </div>
+
+                <!-- Date range pills -->
+                <div id="rptRangeBar" style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:16px;">
+                    <span style="font-size:11px;color:var(--stone);font-weight:500;margin-right:2px;">Period:</span>
+                    <button class="appt-range-pill" data-range="today" onclick="setRptRange('today',this)">Today</button>
+                    <button class="appt-range-pill" data-range="week" onclick="setRptRange('week',this)">This
+                        Week</button>
+                    <button class="appt-range-pill active" data-range="month"
+                        onclick="setRptRange('month',this)">This Month</button>
+                    <button class="appt-range-pill" data-range="all" onclick="setRptRange('all',this)">All
+                        Time</button>
+                    <button class="appt-range-pill" data-range="custom" onclick="setRptRange('custom',this)">Custom
+                        ▾</button>
+                    <span id="rptCustomRange" style="display:none;align-items:center;gap:6px;">
+                        <input type="date" id="rptDateFrom" onchange="renderReports()"
+                            style="font-size:.78rem;padding:4px 8px;border:1px solid var(--mist);border-radius:6px;color:var(--ink);background:var(--pearl);" />
+                        <span style="font-size:.78rem;color:var(--stone);">to</span>
+                        <input type="date" id="rptDateTo" onchange="renderReports()"
+                            style="font-size:.78rem;padding:4px 8px;border:1px solid var(--mist);border-radius:6px;color:var(--ink);background:var(--pearl);" />
+                    </span>
+                </div>
+
+                <!-- Appointment breakdown for selected period -->
+                <div class="appt-summary-grid" style="margin-bottom:20px;">
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon">📋</div>
+                        <div class="appt-summary-val" id="rptTotalAppts">0</div>
+                        <div class="appt-summary-label">Total Appointments</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#fef3c7;">⏳</div>
+                        <div class="appt-summary-val" id="rptPendingCount">0</div>
+                        <div class="appt-summary-label">Pending</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#dbeafe;">✅</div>
+                        <div class="appt-summary-val" id="rptConfirmedCount">0</div>
+                        <div class="appt-summary-label">Confirmed</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#dcfce7;">🏁</div>
+                        <div class="appt-summary-val" id="rptCompletedCount">0</div>
+                        <div class="appt-summary-label">Completed</div>
+                    </div>
+                    <div class="appt-summary-card">
+                        <div class="appt-summary-icon" style="background:#fee2e2;">🚫</div>
+                        <div class="appt-summary-val" id="rptCancelledCount">0</div>
+                        <div class="appt-summary-label">Cancelled</div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card green">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-val" id="rptMonthRevenue">₱0</div>
+                        <div class="stat-label" id="rptMonthRevenueLabel">This Month Revenue</div>
+                        <div class="stat-delta delta-up" id="rptMonthRevenueDelta">from completed sessions</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon">👁</div>
+                        <div class="stat-val" id="rptMonthSessions">0</div>
+                        <div class="stat-label" id="rptMonthSessionsLabel">Sessions This Month</div>
+                        <div class="stat-delta delta-up" id="rptAllTimeSessions">0 all time</div>
+                    </div>
+                    <div class="stat-card amber">
+                        <div class="stat-icon">🔄</div>
+                        <div class="stat-val" id="rptReturnRate">0%</div>
+                        <div class="stat-label">Return Rate</div>
+                        <div class="stat-delta" id="rptReturnRateSub">clients with 2+ visits</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-icon">❌</div>
+                        <div class="stat-val" id="rptCancelRate">0%</div>
+                        <div class="stat-label">Cancellation Rate</div>
+                        <div class="stat-delta" id="rptCancelRateSub">of all bookings</div>
+                    </div>
+                </div>
+
+                <div id="rptEmptyState" class="notif-empty" style="display:none;margin:4px 0 20px;">No report data
+                    available for the selected period.</div>
+
+                <div class="two-col" id="rptPanelsRow1">
+                    <div class="panel">
+                        <h3 class="panel-title">Revenue by Service</h3>
+                        <p class="panel-sub">Completed bookings in the selected period</p>
+                        <div id="revByService"></div>
+                    </div>
+                    <div class="panel">
+                        <h3 class="panel-title">Popular Services</h3>
+                        <p class="panel-sub">Most completed bookings in the selected period</p>
+                        <div id="rptPopularServices"></div>
+                    </div>
+                </div>
+                <div class="two-col" id="rptPanelsRow2">
+                    <div class="panel">
+                        <h3 class="panel-title">Bookings Over Time</h3>
+                        <p class="panel-sub" id="rptBarSub">Appointment volume</p>
+                        <div class="mini-chart-wrap">
+                            <canvas id="dayBarChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <h3 class="panel-title">Appointment Status Distribution</h3>
+                        <p class="panel-sub">Share of appointments by status in the selected period</p>
+                        <div class="mini-chart-wrap">
+                            <canvas id="rptStatusChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- USERS -->
+            <div id="section-users" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">User Accounts</h2>
+                </div>
+                <!-- Role filter -->
+                <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center;">
+                    <span style="font-size:.8rem;color:var(--stone);font-weight:500;">Filter by role:</span>
+                    <button id="ufAll" onclick="setUserRoleFilter('all')"
+                        style="padding:5px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--fern);color:#fff;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;">All</button>
+                    <button id="ufAdmin" onclick="setUserRoleFilter('admin')"
+                        style="padding:5px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;">Admin</button>
+                    <button id="ufStaff" onclick="setUserRoleFilter('staff')"
+                        style="padding:5px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;">Staff</button>
+                    <button id="ufClient" onclick="setUserRoleFilter('client')"
+                        style="padding:5px 14px;border-radius:100px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;">Client</button>
+
+                    <div style="position:relative;flex:1 1 220px;max-width:320px;min-width:180px;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--stone)" stroke-width="2"
+                            style="position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;">
+                            <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" id="userSearchInput" placeholder="Search by name, email, or role..."
+                            oninput="onUserSearchInput()" onkeydown="onUserSearchKeydown(event)" aria-label="Search users"
+                            style="width:100%;padding:6px 30px;border-radius:100px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:.78rem;font-family:inherit;outline:none;transition:border-color .2s;">
+                        <button id="userSearchClear" onclick="clearUserSearch()" aria-label="Clear search" type="button"
+                            style="display:none;position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;color:var(--stone);font-size:.85rem;line-height:1;padding:2px;">✕</button>
+                    </div>
+
+                    <span id="userFilterCount" style="font-size:.78rem;color:var(--stone);margin-left:auto;"></span>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Last Login</th>
+                                <th>Date Added</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- FEEDBACK SECTION -->
+            <div id="section-feedback" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Client Feedback</h2>
+                    <button class="btn-primary" onclick="openQrModal()"> Get QR / Links</button>
+                </div>
+                <div class="stats-grid" style="margin-bottom:20px;">
+                    <div class="stat-card purple">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-val" id="fbAvgRating">—</div>
+                        <div class="stat-label">Average Rating</div>
+                        <div class="stat-delta delta-up" id="fbTotalCount">0 reviews</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon">😄</div>
+                        <div class="stat-val" id="fbExcellentCount">0</div>
+                        <div class="stat-label">5-Star Reviews</div>
+                        <div class="stat-delta delta-up">Excellent</div>
+                    </div>
+                    <div class="stat-card amber">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-val" id="fbThisMonth">0</div>
+                        <div class="stat-label">This Month</div>
+                        <div class="stat-delta" id="fbMonthLabel">—</div>
+                    </div>
+                    <div class="stat-card red">
+                        <div class="stat-icon">🏆</div>
+                        <div class="stat-val" id="fbTopService">—</div>
+                        <div class="stat-label">Top Rated Service</div>
+                        <div class="stat-delta delta-up">By average rating</div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;">
+                    <select id="fbFilterService" onchange="renderFeedback()"
+                        style="border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-family:inherit;font-size:.83rem;background:var(--white);color:var(--ink);outline:none;cursor:pointer;">
+                        <option value="">All Services</option>
+                    </select>
+                    <select id="fbFilterRating" onchange="renderFeedback()"
+                        style="border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-family:inherit;font-size:.83rem;background:var(--white);color:var(--ink);outline:none;cursor:pointer;">
+                        <option value="">All Ratings</option>
+                        <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+                        <option value="4">⭐⭐⭐⭐ Great</option>
+                        <option value="3">⭐⭐⭐ Good</option>
+                        <option value="2">⭐⭐ Fair</option>
+                        <option value="1">⭐ Poor</option>
+                    </select>
+                    <span style="font-size:.8rem;color:var(--stone);margin-left:auto;" id="fbFilterCount"></span>
+                </div>
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Service</th>
+                                <th>Rating</th>
+                                <th>Comment</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- CHATBOT MANAGEMENT -->
+            <div id="section-chatbot" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Chatbot Management</h2>
+                    <button class="btn-primary" onclick="openFaqModal()">+ Add FAQ</button>
+                </div>
+                <div
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px;">
+                    <div style="background:var(--pearl);border-radius:10px;padding:12px 14px;">
+                        <div
+                            style="font-size:11px;color:var(--stone);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">
+                            Total FAQs</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--ink);" id="faqStatTotal">0</div>
+                    </div>
+                    <div style="background:var(--pearl);border-radius:10px;padding:12px 14px;">
+                        <div
+                            style="font-size:11px;color:var(--stone);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">
+                            Active</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--ink);" id="faqStatActive">0</div>
+                    </div>
+                    <div style="background:var(--pearl);border-radius:10px;padding:12px 14px;">
+                        <div
+                            style="font-size:11px;color:var(--stone);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;">
+                            Disabled</div>
+                        <div style="font-size:22px;font-weight:600;color:var(--ink);" id="faqStatDisabled">0</div>
+                    </div>
+                </div>
+                <div class="filter-bar" style="margin-bottom:14px;">
+                    <input type="text" class="search-input" placeholder="Search FAQs..." id="faqSearch"
+                        oninput="renderFaqList()" />
+                    <select class="filter-select" id="faqStatusFilter" onchange="renderFaqList()">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Disabled</option>
+                    </select>
+                </div>
+                <div id="faqListContainer"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- QR / LINK MODAL -->
+    <div class="modal-overlay" id="qrModal">
+        <div class="modal" style="max-width:560px;width:95%;">
+            <div class="modal-header">
+                <div class="modal-title">🔗 Client Reviews QR Code</div>
+                <button class="modal-close" onclick="closeModal('qrModal')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <p style="font-size:.83rem;color:var(--stone);margin-bottom:16px;line-height:1.6;">
+            </p>
+            <div id="qrServiceList"
+                style="display:flex;flex-direction:column;gap:12px;max-height:420px;overflow-y:auto;padding-right:4px;">
+            </div>
+            <div class="modal-actions" style="margin-top:16px;">
+                <button class="btn-cancel" onclick="closeModal('qrModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLIENT VIEW MODAL -->
+    <div class="modal-overlay" id="clientViewModal">
+        <div class="modal modal--wide">
+            <div class="modal-header">
+                <div class="modal-title" id="cvModalTitle">Client Profile</div>
+                <button class="modal-close" onclick="closeModal('clientViewModal')"><svg width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></button>
+            </div>
+            <div id="cvProfile" class="cv-header-row">
+            </div>
+            <div id="cvStats" class="cv-stats-row"></div>
+            <h4 class="cv-appts-label">
+                Appointment History</h4>
+            <div id="cvAppts" class="cv-appts-scroll"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('clientViewModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- EDIT USER MODAL -->
+    <div class="modal-overlay" id="editUserModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Edit User</div>
+                <button class="modal-close" onclick="closeModal('editUserModal')"><svg width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></button>
+            </div>
+            <input type="hidden" id="editUserEmail" />
+            <div class="form-group"><label>Full Name</label><input type="text" id="editUserName" placeholder="Name" />
+            </div>
+            <div class="form-group"><label>Role</label><select id="editUserRole">
+                    <option value="client">Client</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select></div>
+            <div class="form-group"><label>New Password <span style="color:var(--stone);font-weight:400;">(leave blank
+                        to
+                        keep)</span></label><input type="password" id="editUserPassword"
+                    placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" /></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('editUserModal')">Cancel</button>
+                <button class="btn-modal-primary" onclick="saveEditUser()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVENUE DROPDOWN -->
+    <div id="revenueDropdown" class="rev-context-menu" style="display:none;">
+        <div class="rev-menu-inner">
+            <div class="rev-menu-item" onclick="setChartRange('weekly')">&#128197; Weekly View</div>
+            <div class="rev-menu-item" onclick="setChartRange('monthly')">&#128198; Monthly View</div>
+            <div class="rev-menu-sep"></div>
+            <div class="rev-menu-item" onclick="exportRevenueCSV()">&#128202; Export as CSV</div>
+        </div>
+    </div>
+
+    <!-- MONTH PICKER POPUP -->
+    <div id="calMonthPicker"
+        style="display:none;position:fixed;z-index:9999;background:#fff;border:1.5px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,0.13);padding:16px;width:260px;user-select:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+            <button onclick="mpPrevYear()"
+                style="background:none;border:1.5px solid var(--border);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:1rem;color:var(--ink);display:flex;align-items:center;justify-content:center;"
+                onmouseover="this.style.background='var(--mist)'" onmouseout="this.style.background='none'">‹</button>
+            <span id="mpYearLabel" style="font-weight:700;font-size:.95rem;color:var(--ink);"></span>
+            <button onclick="mpNextYear()"
+                style="background:none;border:1.5px solid var(--border);border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:1rem;color:var(--ink);display:flex;align-items:center;justify-content:center;"
+                onmouseover="this.style.background='var(--mist)'" onmouseout="this.style.background='none'">›</button>
+        </div>
+        <div id="mpMonthGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;"></div>
+    </div>
+
+    <!-- SERVICE MODAL (Add/Edit) -->
+    <div class="modal-overlay" id="svcModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="svcModalTitle">Add Service</div>
+                <button class="modal-close" onclick="closeModal('svcModal')"><svg width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></button>
+            </div>
+            <input type="hidden" id="editSvcId" />
+            <div class="form-group"><label>Service Name</label><input type="text" id="svcName"
+                    placeholder="e.g. Deep Cleansing Facial" /></div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="svcCat">
+                    <option>Facial Services</option>
+                    <option>Underarm Care</option>
+                    <option>Eyebrow Care</option>
+                    <option>PL Hair Removal</option>
+                    <option>Wax Services</option>
+                    <option>Warts Removal</option>
+                    <option>Eyelash Care</option>
+                    <option>Exilift Care</option>
+                    <option>Gluta Shots & Drip</option>
+                    <option>Foot Care</option>
+                    <option>Manicure/Pedicure</option>
+                    <option>Products</option>
+                    <option value="__new__">+ New Category...</option>
+                </select>
+            </div>
+            <div class="form-group" id="newCatGroup" hidden><label>New Category Name</label><input type="text"
+                    id="newCatInput" placeholder="Enter new category name" /></div>
+            <div class="form-group"><label>Price</label><input type="text" id="svcPrice"
+                    placeholder="e.g. ₱500 or depends on thickness" /></div>
+            <div class="form-group"><label>Duration</label><input type="text" id="svcDuration"
+                    placeholder="e.g. 60 min or 2 sessions" /></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('svcModal')">Cancel</button>
+                <button class="btn-modal-primary" onclick="saveSvc()">Save Service</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ MODAL (Add/Edit) -->
+    <div class="modal-overlay" id="faqModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title" id="faqModalTitle">Add FAQ</div>
+                <button class="modal-close" onclick="closeModal('faqModal')"><svg width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></button>
+            </div>
+            <input type="hidden" id="editFaqId" />
+            <div class="form-group"><label>Question</label><textarea id="faqQuestion" rows="2"
+                    placeholder="e.g. What services does the spa offer?"
+                    style="width:100%;resize:vertical;font-family:inherit;font-size:.85rem;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;box-sizing:border-box;"></textarea>
+            </div>
+            <div class="form-group"><label>Answer</label><textarea id="faqAnswer" rows="4"
+                    placeholder="e.g. We offer facial, manicure, pedicure, eyelash, eyebrow, and other beauty treatments."
+                    style="width:100%;resize:vertical;font-family:inherit;font-size:.85rem;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;box-sizing:border-box;"></textarea>
+            </div>
+            <div class="form-group"><label>Keywords <span style="color:var(--stone);font-weight:400;">(comma
+                        separated — helps the chatbot match different wordings)</span></label>
+                <input type="text" id="faqKeywords" placeholder="e.g. hours, opening, open, schedule" />
+            </div>
+            <div class="form-group" style="display:flex;align-items:center;gap:8px;">
+                <input type="checkbox" id="faqActive" checked style="width:16px;height:16px;cursor:pointer;" />
+                <label for="faqActive" style="margin:0;cursor:pointer;">Active (visible to the chatbot)</label>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('faqModal')">Cancel</button>
+                <button class="btn-modal-primary" onclick="saveFaqFromModal()">Save FAQ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPOINTMENT MODAL -->
+    <div class="modal-overlay" id="apptModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">New Appointment</div>
+                <button class="modal-close" onclick="closeModal('apptModal')"><svg width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg></button>
+            </div>
+            <div class="form-group"><label>Client</label><select id="apptClient"></select></div>
+            <div class="form-group"><label>Service</label><select id="apptSvc"></select></div>
+            <div class="form-group"><label>Staff</label>
+                <select id="apptStaff">
+                    <option value="Any available staff">Any available staff</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="hidden" id="apptDate" />
+                <div id="apptCalWrap"
+                    style="background:var(--pearl);border:1.5px solid var(--border);border-radius:14px;padding:12px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Time</label>
+                <input type="hidden" id="apptTime" />
+                <div id="apptTimeWrap"></div>
+            </div>
+            <div class="form-group"><label>Notes (optional)</label><input type="text" id="apptNotes"
+                    placeholder="Any special requests..." /></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('apptModal')">Cancel</button>
+                <button class="btn-modal-primary" onclick="addAppt()">Create Appointment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- STAFF MODAL -->
+    <div class="modal-overlay" id="staffModal">
+        <div class="modal">
+            <div class="modal-title">Add Staff</div>
+            <div class="form-group"><label>Full Name</label><input type="text" id="newStaffName"
+                    placeholder="Staff Name" />
+            </div>
+            <div class="form-group"><label>Email</label><input type="email" id="newStaffEmail"
+                    placeholder="staff@shortcuts.com" /></div>
+            <div class="form-group"><label>Password</label><input type="password" id="newStaffPassword"
+                    placeholder="••••••••" /></div>
+            <div class="form-group">
+                <label>Specialization</label>
+                <select id="newStaffSpec">
+                    <option value="All Services">All Services</option>
+                    <option value="Facial Services">Facial Services</option>
+                    <option value="Underarm Care">Underarm Care</option>
+                    <option value="Eyebrow Care">Eyebrow Care</option>
+                    <option value="Eyelash Care">Eyelash Care</option>
+                    <option value="Wax Services">Wax Services</option>
+                    <option value="PL Hair Removal">PL Hair Removal</option>
+                    <option value="Gluta Shots & Drip">Gluta Shots & Drip</option>
+                    <option value="Foot Care">Foot Care</option>
+                    <option value="Manicure/Pedicure">Manicure/Pedicure</option>
+                    <option value="Exilift Care">Exilift Care</option>
+                    <option value="Warts Removal">Warts Removal</option>
+                </select>
+            </div>
+            <div class="modal-actions"><button class="btn-cancel"
+                    onclick="closeModal('staffModal')">Cancel</button><button class="btn-modal-primary"
+                    onclick="addStaff()">Add Staff</button></div>
+        </div>
+    </div>
+
+    <!-- USER MODAL -->
+    <div class="modal-overlay" id="userModal">
+        <div class="modal">
+            <div class="modal-title">Add User</div>
+            <div class="form-group"><label>Full Name</label><input type="text" id="newUserName" placeholder="Name" />
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <div style="position:relative;">
+                    <input type="email" id="newUserEmail" placeholder="user@shortcuts.com"
+                        style="padding-right:36px;" />
+                    <span id="emailCheckIcon"
+                        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:.85rem;display:none;"></span>
+                </div>
+                <div id="emailCheckMsg"
+                    style="font-size:.72rem;margin-top:4px;display:none;padding:4px 8px;border-radius:6px;"></div>
+            </div>
+            <div class="form-group"><label>Role</label><select id="newUserRole">
+                    <option value="client">Client</option>
+                    <option value="staff">Staff</option>
+                    <option value="admin">Admin</option>
+                </select></div>
+            <div class="form-group"><label>Date Added</label><input type="date" id="newUserDateAdded" /></div>
+            <!-- Email Verification (replaces password) -->
+            <div class="form-group" id="verifyEmailGroup">
+                <label>Email Verification</label>
+                <div id="verifyStatus"
+                    style="display:none;font-size:.76rem;padding:8px 12px;border-radius:8px;margin-bottom:8px;line-height:1.5;">
+                </div>
+                <button type="button" id="sendVerifyBtn" onclick="sendVerificationLink()"
+                    style="width:100%;padding:9px 0;border-radius:10px;border:1.5px solid var(--fern);background:transparent;color:var(--fern);font-size:.82rem;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;">
+                    <span id="sendVerifyLabel">📧 Send Verification Link</span>
+                    <div id="sendVerifySpin"
+                        style="display:none;width:14px;height:14px;border:2px solid var(--fern);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;">
+                    </div>
+                </button>
+                <p style="font-size:.7rem;color:var(--silver);margin-top:6px;line-height:1.5;">A sign-in link will be
+                    sent to their email. Once they click it, their account will be activated automatically.</p>
+            </div>
+            <div class="modal-actions"><button class="btn-cancel"
+                    onclick="closeModal('userModal')">Cancel</button><button class="btn-modal-primary"
+                    id="createUserBtn" onclick="addUser()">Create User</button></div>
+        </div>
+    </div>
+
+    <!-- REASSIGN MODAL -->
+    <div class="modal-overlay" id="reassignModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Reassign Appointment</div>
+                <button class="modal-close" onclick="closeModal('reassignModal')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div id="reassignApptInfo"
+                style="background:var(--mist);border-radius:10px;padding:12px 16px;font-size:.83rem;margin-bottom:16px;line-height:1.6;">
+            </div>
+            <div class="form-group">
+                <label>Assign to Staff</label>
+                <select id="reassignStaffSel"></select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('reassignModal')">Cancel</button>
+                <button class="btn-modal-primary" onclick="confirmReassign()">Reassign &amp; Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APPOINTMENT DETAILS MODAL -->
+    <div class="modal-overlay" id="apptViewModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-header">
+                <div class="modal-title">Appointment Details</div>
+                <button class="modal-close" onclick="closeModal('apptViewModal')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div id="apptViewBody" style="font-size:.85rem;line-height:1.7;"></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('apptViewModal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RESCHEDULE MODAL -->
+    <div class="modal-overlay" id="apptRescheduleModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Reschedule Appointment</div>
+                <button class="modal-close" onclick="closeModal('apptRescheduleModal')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div id="rescheduleApptInfo"
+                style="background:var(--mist);border-radius:10px;padding:12px 16px;font-size:.83rem;margin-bottom:16px;line-height:1.6;">
+            </div>
+            <div class="form-group"><label>New Date</label><input type="date" id="rescheduleDate" /></div>
+            <div class="form-group"><label>New Time</label><input type="time" id="rescheduleTime" /></div>
+            <div class="form-group"><label>Assigned Staff</label><select id="rescheduleStaffSel"></select></div>
+            <div id="rescheduleConflictWarning"
+                style="display:none;color:#b45309;background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:8px 12px;font-size:.78rem;margin-bottom:8px;">
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('apptRescheduleModal')">Cancel</button>
+                <button class="btn-modal-primary" onclick="confirmReschedule()">Save New Schedule</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GENERIC CONFIRM MODAL (Cancel / Mark Completed) -->
+    <div class="modal-overlay" id="apptConfirmModal">
+        <div class="modal" style="max-width:380px;text-align:center;">
+            <h3 class="modal-title" id="apptConfirmTitle" style="margin-bottom:10px;"></h3>
+            <p id="apptConfirmMsg" style="font-size:.85rem;color:var(--stone);margin-bottom:6px;"></p>
+            <div class="modal-actions" style="margin-top:18px;">
+                <button class="btn-cancel" id="apptConfirmKeepBtn" onclick="closeModal('apptConfirmModal')"></button>
+                <button class="btn-modal-primary" id="apptConfirmActionBtn"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPOSE MESSAGE MODAL -->
+    <div class="modal-overlay" id="composeModal">
+        <div class="modal" style="max-width:540px;width:95%;">
+            <div class="modal-header">
+                <div class="modal-title">✉ Compose Message</div>
+                <button class="modal-close" onclick="closeModal('composeModal')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="form-group">
+                <label>Message Type</label>
+                <select id="msgType">
+                    <option value="promo">🎉 Promo / Discount</option>
+                    <option value="announcement">📢 Announcement</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Send To (Audience)</label>
+                <select id="msgAudienceType" onchange="toggleRecipientPicker()">
+                    <option value="all_clients">All Clients</option>
+                    <option value="specific_clients">Specific Client(s)</option>
+                    <option value="all_staff">All Staff</option>
+                    <option value="specific_staff">Specific Staff Member(s)</option>
+                </select>
+            </div>
+            <!-- Client checkboxes -->
+            <div class="form-group" id="specificRecipientWrap" style="display:none;">
+                <label>Select Clients</label>
+                <div style="position:relative;margin-bottom:6px;">
+                    <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--stone);"
+                        width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input type="text" id="composeClientSearch" placeholder="Search client..."
+                        oninput="filterCheckboxList('composeClientSearch','clientCheckboxList')"
+                        style="width:100%;padding:7px 10px 7px 30px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:inherit;background:var(--white);color:var(--ink);outline:none;transition:border .2s;"
+                        onfocus="this.style.borderColor='var(--fern)'"
+                        onblur="this.style.borderColor='var(--border)'" />
+                </div>
+                <div id="clientCheckboxList"
+                    style="max-height:200px;overflow-y:auto;border:1.5px solid var(--border);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:4px;background:var(--pearl);">
+                </div>
+            </div>
+            <!-- Staff checkboxes -->
+            <div class="form-group" id="specificStaffWrap" style="display:none;">
+                <label>Select Staff</label>
+                <div style="position:relative;margin-bottom:6px;">
+                    <svg style="position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--stone);"
+                        width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input type="text" id="staffSearch" placeholder="Search staff..."
+                        oninput="filterCheckboxList('staffSearch','staffCheckboxList')"
+                        style="width:100%;padding:7px 10px 7px 30px;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:inherit;background:var(--white);color:var(--ink);outline:none;transition:border .2s;"
+                        onfocus="this.style.borderColor='#0ea5e9'" onblur="this.style.borderColor='var(--border)'" />
+                </div>
+                <div id="staffCheckboxList"
+                    style="max-height:200px;overflow-y:auto;border:1.5px solid var(--border);border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:4px;background:var(--pearl);">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" id="msgSubject" placeholder="e.g. Exclusive Promo This Weekend! 🌿" />
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea id="msgBody" rows="5"
+                    style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:.88rem;resize:vertical;outline:none;background:var(--pearl);color:var(--ink);line-height:1.6;"
+                    placeholder="Write your message here..."></textarea>
+            </div>
+            <!-- Email toggle -->
+            <div class="form-group"
+                style="padding:12px 14px;background:var(--pearl);border:1.5px solid var(--border);border-radius:10px;">
+                <label for="sendEmailToggle" style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;">
+                    <input type="checkbox" id="sendEmailToggle"
+                        style="accent-color:var(--fern);width:16px;height:16px;cursor:pointer;flex-shrink:0;" />
+                    <span style="display:flex;align-items:center;gap:8px;flex:1;">
+                        <span style="font-size:.85rem;color:var(--ink);font-weight:600;">📧 Also Send via Email</span>
+                        <span id="emailjsStatusBadge"
+                            style="font-size:.7rem;padding:2px 10px;border-radius:100px;font-weight:600;margin-left:auto;"></span>
+                    </span>
+                </label>
+                <p style="margin:5px 0 0 26px;font-size:.75rem;color:var(--stone);line-height:1.4;">Recipients must have
+                    a registered email address</p>
+            </div>
+            <!-- SMS toggle -->
+            <div class="form-group"
+                style="padding:12px 14px;background:var(--pearl);border:1.5px solid var(--border);border-radius:10px;margin-top:8px;">
+                <label for="sendSmsToggle" style="display:flex;align-items:center;gap:10px;cursor:pointer;margin:0;">
+                    <input type="checkbox" id="sendSmsToggle"
+                        style="accent-color:var(--fern);width:16px;height:16px;cursor:pointer;flex-shrink:0;" />
+                    <span style="display:flex;align-items:center;gap:8px;flex:1;">
+                        <span style="font-size:.85rem;color:var(--ink);font-weight:600;">📱 Also Send via SMS</span>
+                        <span id="semaphoreStatusBadge"
+                            style="font-size:.7rem;padding:2px 10px;border-radius:100px;font-weight:600;margin-left:auto;"></span>
+                    </span>
+                </label>
+                <p style="margin:5px 0 0 26px;font-size:.75rem;color:var(--stone);line-height:1.4;">Recipients must have
+                    a registered phone number (09xxxxxxxxx)</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('composeModal')">Cancel</button>
+                <button class="btn-modal-primary" id="sendMsgBtn" onclick="sendPromoMessage()">Send Message</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast toast-admin" id="toast"></div>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+    <!-- EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        var EMAILJS_PUBLIC_KEY = 'UAJyMbD0UUclZsN_B';
+        var EMAILJS_SERVICE_ID = 'service_cq4futk';
+        var EMAILJS_TEMPLATE_ID = 'template_cmfmdsa';
+
+        if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+            emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+            console.log('[Spa] EmailJS initialized OK');
+        } else {
+            console.warn('[Spa] EmailJS not configured. Emails will not be sent.');
+        }
+    </script>
+    <script src="../js/firebase-init.js"></script>
+    <script src="../js/shared-data.js"></script>
+    <script src="../js/shared/authGuard.js"></script>
+    <script src="../js/shared/sessionTimeout.js"></script>
+    <script src="../js/shared-booking-calendar.js"></script>
+
+    <!-- BOTTOM NAV (mobile) -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bn-item active" onclick="showSection('overview');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            <div class="bn-dot"></div>
+            Home
+        </button>
+        <button class="bn-item" onclick="showSection('appointments');setBnActive(this)" style="position:relative;">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+            </svg>
+            <span id="pendingBnBadge"
+                style="display:none;position:absolute;top:2px;right:calc(50% - 18px);background:#ef4444;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;padding:0 4px;line-height:16px;text-align:center;"></span>
+            <div class="bn-dot"></div>
+            Appts
+        </button>
+        <button class="bn-item" onclick="showSection('services');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="7" y="7" width="10" height="10" rx="1" />
+                <path d="M9 3H5a2 2 0 0 0-2 2v4" />
+                <path d="M15 3h4a2 2 0 0 1 2 2v4" />
+                <path d="M9 21H5a2 2 0 0 1-2-2v-4" />
+                <path d="M15 21h4a2 2 0 0 0 2-2v-4" />
+            </svg>
+            <div class="bn-dot"></div>
+            Services
+        </button>
+        <button class="bn-item" onclick="showSection('clients');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <circle cx="9" cy="7" r="4" />
+                <path d="M2 21c0-4 3.1-7 7-7h5" />
+                <circle cx="17" cy="11" r="3" />
+            </svg>
+            <div class="bn-dot"></div>
+            Clients
+        </button>
+        <button class="bn-item" onclick="showSection('reports');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M3 3v18h18" />
+                <path d="m7 16 4-4 4 4 4-6" />
+            </svg>
+            <div class="bn-dot"></div>
+            Reports
+        </button>
+    </nav>
+
+    <script src="../js/admin-bundle.js"></script>
+</body>
+
+</html>

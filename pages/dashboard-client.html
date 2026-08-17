@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Dashboard &mdash; Shortcut's Spa</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css" />
+    <!-- Back-button / cache protection -->
+    <script>
+        (function () {
+            function checkSession() {
+                var u = null;
+                try { u = JSON.parse(localStorage.getItem('spa_user')); } catch (e) {}
+                if (!u || u.role !== 'client') {
+                    window.location.replace('../index.html');
+                }
+            }
+            checkSession();
+            window.addEventListener('pageshow', function (e) {
+                if (e.persisted) checkSession();
+            });
+        })();
+    </script>
+</head>
+
+<body class="has-bottom-nav">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <aside class="sidebar sidebar-client" id="sidebar">
+        <div class="sidebar-logo">
+            <div class="logo-mark"><img src="../Spa_logo.jpg" alt="Logo" class="logo-img" /></div>
+            <h2><em>Shortcut's</em> Spa</h2>
+            <p>Client Portal</p>
+        </div>
+        <nav class="sidebar-nav">
+            <p class="nav-section-label">Main</p>
+            <a class="nav-item active" href="#" onclick="return showSection('overview')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" rx="1" />
+                    <rect x="14" y="3" width="7" height="7" rx="1" />
+                    <rect x="3" y="14" width="7" height="7" rx="1" />
+                    <rect x="14" y="14" width="7" height="7" rx="1" />
+                </svg>Overview</a>
+            <a class="nav-item" href="#" onclick="return showSection('appointments')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <path d="M16 2v4M8 2v4M3 10h18" />
+                </svg>My Appointments</a>
+            <a class="nav-item" href="#" onclick="return showSection('book')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4l3 3" />
+                </svg>Book a Service</a>
+            <a class="nav-item" href="#" onclick="return showSection('messages')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                </svg>Messages <span id="msgBadge"
+                    style="display:none;background:#ec4899;color:white;font-size:.65rem;font-weight:700;padding:1px 6px;border-radius:100px;margin-left:4px;"></span></a>
+            <p class="nav-section-label">Account</p>
+            <a class="nav-item" href="#" onclick="return showSection('profile')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="8" r="4" />
+                    <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+                </svg>My Profile</a>
+            <a class="nav-item" href="#" onclick="return showSection('history')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 8v4l3 3m-3-11a9 9 0 1 0 9 9" />
+                </svg>Visit History</a>
+            <a class="nav-item" href="#" onclick="return showSection('myreviews')">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>My Reviews</a>
+        </nav>
+        <div class="sidebar-user">
+            <div class="user-avatar" id="sidebarAvatar">C</div>
+            <div class="user-info">
+                <div class="user-name" id="sidebarName">Client</div>
+                <div class="user-role">Client</div>
+            </div>
+            <button class="logout-btn" id="logoutBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+            </button>
+        </div>
+    </aside>
+
+    <div class="main">
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 id="pageTitle">Good day!</h1>
+                <p id="pageSubtitle">Here's what's coming up for you</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div class="notif-bell-wrap">
+                    <button class="notif-bell-btn" id="notifBellBtn" onclick="toggleClientNotifDropdown(event)" aria-label="Notifications">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                        </svg>
+                        <span class="notif-badge" id="notifBadge">0</span>
+                    </button>
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">Notifications</div>
+                        <div class="notif-list" id="notifList">
+                            <div class="notif-empty">No notifications yet.</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="menu-toggle" id="menuToggle">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="content">
+
+            <!-- OVERVIEW -->
+            <div id="section-overview">
+                <!-- Rate-your-service prompt (shown when unrated done appointments exist) -->
+                <div id="ratePromptBanner" style="display:none;background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1.5px solid #fcd34d;border-radius:14px;padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                    <div style="font-size:1.6rem;flex-shrink:0;">⭐</div>
+                    <div style="flex:1;min-width:180px;">
+                        <div style="font-weight:600;font-size:.92rem;color:#92400e;margin-bottom:2px;">How was your recent service?</div>
+                        <div style="font-size:.8rem;color:#b45309;" id="ratePromptSub">You have services to review!</div>
+                    </div>
+                    <button onclick="openRateModal()" style="background:#f59e0b;color:white;border:none;border-radius:10px;padding:9px 18px;font-family:inherit;font-size:.83rem;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;">Rate Now →</button>
+                    <button onclick="dismissRateBanner()" style="background:none;border:none;cursor:pointer;color:#b45309;font-size:1.1rem;padding:2px;flex-shrink:0;"></button>
+                </div>
+                <!-- Staff-declined notices (hidden when empty) -->
+                <div id="declinedNotices" class="notice-banner" style="display:none;"></div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">&#128197;</div>
+                        <div class="stat-val" id="statUpcoming">0</div>
+                        <div class="stat-label">Upcoming Appointments</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">&#10024;</div>
+                        <div class="stat-val" id="statTotal">0</div>
+                        <div class="stat-label">Total Visits</div>
+                        <div class="stat-delta" id="statMemberSince">New member</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">&#127807;</div>
+                        <div class="stat-val" id="statLoyalty">Bronze</div>
+                        <div class="stat-label">Loyalty Tier</div>
+                        <div class="stat-delta" id="statPts">0 pts earned</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">&#128133;</div>
+                        <div class="stat-val" id="statSvcs">0</div>
+                        <div class="stat-label">Services Available</div>
+                    </div>
+                </div>
+                <div class="section-header">
+                    <h2 class="section-title">Upcoming Appointments</h2>
+                    <a href="#" class="section-link" onclick="return showSection('appointments')">View all &rarr;</a>
+                </div>
+                <div class="appt-list" id="upcomingList"></div>
+                <div class="section-header" style="margin-top:8px;">
+                    <h2 class="section-title">Featured Services</h2>
+                    <a href="#" class="section-link" onclick="return showSection('book')">Browse all &rarr;</a>
+                </div>
+                <div class="svc-list" id="popularList"></div>
+            </div>
+
+            <!-- MY REVIEWS -->
+            <div id="section-myreviews" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">My Reviews</h2>
+                    <button class="appt-btn primary" onclick="openRateModal()">+ Write a Review</button>
+                </div>
+                <div id="myReviewsList"></div>
+            </div>
+
+            <!-- MY APPOINTMENTS -->
+            <div id="section-appointments" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">All My Appointments</h2>
+                    <button class="appt-btn primary" onclick="openBookModal()">+ Book New</button>
+                </div>
+                <div class="appt-list" id="allApptList"></div>
+            </div>
+
+            <!-- BOOK A SERVICE -->
+            <div id="section-book" style="display:none;">
+                <div class="section-header">
+                    <h2 class="section-title">Book a Service</h2>
+                    <span id="svcCount" style="font-size:.78rem;color:var(--stone);"></span>
+                </div>
+                <div class="search-wrap">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.35-4.35" />
+                    </svg>
+                    <input class="search-bar" type="text" id="svcSearch"
+                        placeholder="Search services, e.g. facial, nail, wax..." oninput="renderSvcList()" />
+                </div>
+                <div class="cat-tabs" id="catTabs"></div>
+                <div class="svc-list" id="svcList"></div>
+            </div>
+
+            <!-- MY PROFILE -->
+            <div id="section-profile" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:24px;">My Profile</h2>
+                <div
+                    style="background:white;border:1px solid var(--border);border-radius:16px;padding:28px;max-width:480px;">
+                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;">
+                        <div id="profileAvatarWrap"
+                            style="width:60px;height:60px;border-radius:50%;overflow:hidden;flex-shrink:0;">
+                            <div class="user-avatar" style="width:60px;height:60px;font-size:22px;" id="profileAvatar">C
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:1.1rem;font-weight:500;" id="profileName">Client</div>
+                            <div style="font-size:.78rem;color:var(--stone);" id="profileEmail"></div>
+                            <div style="font-size:.7rem;background:#e8f5ee;color:var(--fern);padding:2px 9px;border-radius:100px;display:inline-block;margin-top:4px;"
+                                id="profileTier">Bronze Member</div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Full Name</label><input type="text" id="profileNameInput" /></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="profileEmailInput" readonly
+                            style="background:var(--pearl);color:var(--stone);" /></div>
+                    <div class="form-group"><label>Phone</label><input type="tel" id="profilePhoneInput"
+                            placeholder="+63 9XX XXX XXXX" /></div>
+                    <div class="form-group"><label>Birthday</label><input type="date" id="profileBirthday" /></div>
+                    <button class="btn-primary" onclick="saveProfile()">Save Changes</button>
+                </div>
+            </div>
+
+            <!-- MESSAGES -->
+            <div id="section-messages" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:20px;">Messages</h2>
+
+                <div class="panel" style="margin-bottom:28px;padding:0;overflow:hidden;">
+                    <div
+                        style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+                        <div
+                            style="width:36px;height:36px;border-radius:50%;background:var(--fern);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+                            S</div>
+                        <div>
+                            <div style="font-weight:700;font-size:.88rem;color:var(--ink);">Shortcut's Spa Team</div>
+                            <div style="font-size:.72rem;color:var(--stone);">Chat with the spa about your
+                                appointments</div>
+                        </div>
+                    </div>
+                    <div id="chatThread"
+                        style="height:320px;overflow-y:auto;padding:16px 20px;display:flex;flex-direction:column;gap:10px;background:var(--pearl);">
+                        <div style="margin:auto;text-align:center;color:var(--stone);font-size:.82rem;">Loading
+                            messages...</div>
+                    </div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end;background:#fff;">
+                        <textarea id="chatInput" rows="1" placeholder="Type a message..." maxlength="1000"
+                            onkeydown="onChatInputKeydown(event)"
+                            style="flex:1;resize:none;border:1.5px solid var(--border);border-radius:20px;padding:9px 16px;font-family:inherit;font-size:.85rem;outline:none;max-height:100px;"></textarea>
+                        <button class="btn-primary" id="chatSendBtn" onclick="sendClientChatMessage()"
+                            aria-label="Send message"
+                            style="border-radius:50%;width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px;color:var(--ink);">Announcements &amp;
+                    Promos</h3>
+                <div id="clientMsgList"></div>
+            </div>
+
+            <!-- VISIT HISTORY -->
+            <div id="section-history" style="display:none;">
+                <h2 class="section-title" style="margin-bottom:20px;">Visit History</h2>
+                <div class="appt-list" id="historyList"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- BOOK MODAL -->
+    <div class="modal-overlay" id="bookModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Book Appointment</div>
+                <button class="modal-close" onclick="closeBookModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="form-group"><label>Service</label><select id="bookService"></select></div>
+            <div class="form-group"><label>Staff Preference</label>
+                <select id="bookStaff">
+                    <option value="Any available staff">Any available staff</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Preferred Date</label>
+                <input type="hidden" id="bookDate" />
+                <div id="bookCalWrap"
+                    style="background:var(--pearl);border:1.5px solid var(--border);border-radius:14px;padding:12px;">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Preferred Time</label>
+                <input type="hidden" id="bookTime" />
+                <div id="bookTimeWrap"></div>
+            </div>
+            <div class="form-group"><label>Notes (optional)</label><input type="text" id="bookNotes"
+                    placeholder="Any special requests..." /></div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeBookModal()">Cancel</button>
+                <button class="btn-primary" onclick="confirmBooking()">Confirm Booking</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RATE SERVICE MODAL -->
+    <div class="modal-overlay" id="rateModal">
+        <div class="modal" style="max-width:440px;">
+            <div class="modal-header">
+                <div class="modal-title">⭐ Rate Your Service</div>
+                <button class="modal-close" onclick="closeRateModal()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+            <!-- Unrated appointment picker -->
+            <div class="form-group" id="rateApptWrap">
+                <label>Which service are you reviewing?</label>
+                <select id="rateApptSel" onchange="updateRateApptInfo()"></select>
+                <div id="rateApptInfo" style="font-size:.78rem;color:var(--stone);margin-top:6px;"></div>
+            </div>
+            <!-- Star rating -->
+            <div class="form-group">
+                <label>Your Rating</label>
+                <div style="display:flex;gap:10px;margin-top:6px;" id="rateStarRow">
+                    <button class="rate-star" data-val="1" type="button" onclick="setRateStar(1)">⭐</button>
+                    <button class="rate-star" data-val="2" type="button" onclick="setRateStar(2)">⭐</button>
+                    <button class="rate-star" data-val="3" type="button" onclick="setRateStar(3)">⭐</button>
+                    <button class="rate-star" data-val="4" type="button" onclick="setRateStar(4)">⭐</button>
+                    <button class="rate-star" data-val="5" type="button" onclick="setRateStar(5)">⭐</button>
+                </div>
+                <div id="rateStarLabel" style="font-size:.82rem;color:var(--stone);margin-top:6px;min-height:18px;font-weight:500;"></div>
+            </div>
+            <div class="form-group">
+                <label>Comment <span style="font-size:.73rem;color:var(--stone);font-weight:400;">(optional)</span></label>
+                <textarea id="rateComment" rows="3" placeholder="What did you love? Any suggestions?" style="width:100%;border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;font-family:inherit;font-size:.85rem;resize:vertical;outline:none;background:var(--pearl);color:var(--ink);line-height:1.6;transition:border-color .2s;" onfocus="this.style.borderColor='var(--fern)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeRateModal()">Cancel</button>
+                <button class="btn-primary" onclick="submitClientReview()">Submit Review</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .rate-star {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.8rem;
+            padding: 2px;
+            transition: transform .15s;
+            filter: grayscale(1) opacity(.3);
+            line-height: 1;
+        }
+        .rate-star.active {
+            filter: none;
+            transform: scale(1.15);
+        }
+        #ratePromptBanner { display: none; }
+        #ratePromptBanner.visible { display: flex !important; }
+    </style>
+
+    <div class="toast toast-client" id="toast"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-init.js"></script>
+    <script src="../js/shared-data.js"></script>
+    <script src="../js/shared/authGuard.js"></script>
+    <script src="../js/shared/sessionTimeout.js"></script>
+    <script src="../js/shared-booking-calendar.js"></script>
+
+    <!-- BOTTOM NAV (mobile) -->
+    <nav class="bottom-nav" id="bottomNav">
+        <button class="bn-item active" onclick="showSection('overview');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" rx="1" />
+                <rect x="14" y="3" width="7" height="7" rx="1" />
+                <rect x="3" y="14" width="7" height="7" rx="1" />
+                <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            <div class="bn-dot"></div>
+            Home
+        </button>
+        <button class="bn-item" onclick="showSection('appointments');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <path d="M16 2v4M8 2v4M3 10h18" />
+            </svg>
+            <div class="bn-dot"></div>
+            Appts
+        </button>
+        <button class="bn-item" onclick="showSection('book');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 8v4l3 3" />
+            </svg>
+            <div class="bn-dot"></div>
+            Book
+        </button>
+        <button class="bn-item" onclick="showSection('history');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M12 8v4l3 3m-3-11a9 9 0 1 0 9 9" />
+            </svg>
+            <div class="bn-dot"></div>
+            History
+        </button>
+        <button class="bn-item" onclick="showSection('messages');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <div class="bn-dot"></div>
+            Msgs
+        </button>
+        <button class="bn-item" onclick="showSection('profile');setBnActive(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
+            </svg>
+            <div class="bn-dot"></div>
+            Profile
+        </button>
+    </nav>
+
+    <script src="../js/client-bundle.js"></script>
+    <script src="../js/chatbot-widget.js"></script>
+</body>
+
+</html>
